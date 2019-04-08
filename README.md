@@ -389,6 +389,8 @@ The keyboard layout in use should be the PC variant of whatever layout you use.
 From the Trackpad Preference Pane, set secondary click to click in bottom right corner if you want.
 I don't think the gestures there work; you're meant to go to the keyboard settings, edit a shortcut for something and then swipe.
 
+The laptop's PrtSc key is bound to F13 - you can edit the various screenshot shortcuts in the Keyboard Preference Pane to use the PrtSc key if you wish.
+
 #### ThinkPadMuteLEDSetter
 
 If anybody wants to make a better version of [this](https://github.com/qwerty12/ThinkPadMuteLEDSetter), I'll be happy to use it.
