@@ -48,7 +48,7 @@ So yeah, update your Clover before macOS!
 
 * [Sniki](https://github.com/Snikii) - a computer without sound is a terrible thing to most people and that thankfully is not the case here thanks to Sniki's modified AppleHDA kext and ALCPlugFix (makes sure sound works over headphones too)
 
-Also thanks to the Clover developers, Mieze for her Intel Ethernet driver, the acidanthera collective (most of the third-party kexts I have installed are theirs!), goodwin for ALCPlugFix and nguyenlc1993 for his ASUS K501L guide showing how to tune AppleGraphicsPowerManagement.kext and X86PlatformPlugin.kext to have the CPU idle at 800MHz and the GPU minimum speed one floor lower.
+Also thanks to the Clover developers, Mieze for her Intel Ethernet driver, the acidanthera collective (most of the third-party kexts I have installed are theirs!), goodwin for ALCPlugFix, Dolnor/TimeWalker75a for CodecCommander and nguyenlc1993 for his ASUS K501L guide showing how to tune AppleGraphicsPowerManagement.kext and X86PlatformPlugin.kext to have the CPU idle at 800MHz and the GPU minimum speed one floor lower.
 
 ### Preparation
 
