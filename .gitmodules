@@ -1,0 +1,12 @@
+[submodule "DSDT_src/srcs/acidanthera/CPUFriend"]
+	path = DSDT_src/srcs/acidanthera/CPUFriend
+	url = https://github.com/acidanthera/CPUFriend.git
+[submodule "DSDT_src/srcs/Goldfish64/Hackintosh"]
+	path = DSDT_src/srcs/Goldfish64/Hackintosh
+	url = https://github.com/qwerty12/Hackintosh.git
+[submodule "DSDT_src/srcs/RehabMan/OS-X-Clover-Laptop-Config"]
+	path = DSDT_src/srcs/RehabMan/OS-X-Clover-Laptop-Config
+	url = https://github.com/qwerty12/OS-X-Clover-Laptop-Config.git
+[submodule "DSDT_src/srcs/Snikii/Lenovo-ThinkPad-X240"]
+	path = DSDT_src/srcs/Snikii/Lenovo-ThinkPad-X240
+	url = https://github.com/qwerty12/Lenovo-ThinkPad-X240.git
