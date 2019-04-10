@@ -268,7 +268,7 @@ Run `EDITOR=nano sudo visudo` and add the following rule at the end:
 Ideally, a LaunchAgent would then run the sudo command to load a kext, but I'm lazy and have the following in my [Hammerspoon](https://www.hammerspoon.org/) init.lua:
 
 ```
-os.execute("/usr/bin/sudo /sbin/kextload /kexts/BrcmPatchRAM2.kext 2>&1")
+os.execute("/usr/bin/sudo /sbin/kextload /kexts/BrcmPatchRAM2.kext >/dev/null 2>&1")
 ```
 
 After you've set up the kexts, open the Bluetooth Preference Pane and tick the option to show the Bluetooth icon in the status bar. I'll plug Dozer here if you have too many status bar icons.
@@ -390,6 +390,10 @@ From the Trackpad Preference Pane, set secondary click to click in bottom right 
 I don't think the gestures there work; you're meant to go to the keyboard settings, edit a shortcut for something and then swipe.
 
 The laptop's PrtSc key is bound to F13 - you can edit the various screenshot shortcuts in the Keyboard Preference Pane to use the PrtSc key if you wish.
+
+#### Caps lock indicator
+
+The freeware [Captin](http://captin.strikingly.com) program can be used to show the caps lock status when the button is pressed. A hex editor can be used to zero out the OFF and ON labels, making it more closer to how the Lenovo OSD looks.
 
 #### ThinkPadMuteLEDSetter
 
