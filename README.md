@@ -1,8 +1,4 @@
-# Warning
-
-Every 10th time or so the laptop is woken from sleep, my X250 resets. Even blocking nearly everything with RTCMemoryFixup does not help. I do not recommend that this guide be used with such a big issue to be resolved. As other X250 guides have never mentioned anything like this happening, I assume the problem is something inherent to this configuration. Still, I've spent quite a bit of time typing this up, so maybe this'll help somebody at least.
-
-To clone this repo, run `git clone --recursive https://github.com/qwerty12/X250-Clover.git`. Otherwise, you'll be missing a ton of files.
+To clone this repo, run `git clone --recursive https://github.com/qwerty12/X250-Hackintosh.git`. Otherwise, you'll be missing a ton of files.
 
 # X250 Mojave
 
@@ -27,7 +23,6 @@ Card reader | Realtek something | sinetek's driver (syscl's fork) might work som
 
 ### Problems and other things you should be aware of
 
-* I've found the right offsets for RTCMemoryFixup to fix the CMOS checksum issue when resuming. However, as stated at the top of this guide, sometimes resuming causes the laptop to reset.
 * I have only tested this X250 with 10.14.3 and 10.14.4 (updated from .3). Dark mode is far too enticing for me to test anything else.
     * Something that I was unaware of while updating is that loading kexts from Clover's EFI folder (as opposed to /Library/Extensions etc.) is only possible because Clover hotpatches some component to allow this to happen. When I did the update from .3 to .4, I was getting a kernel panic and I wasn't able to see why because of irrelevant information being dumped to the screen. Long story short, it was because WhateverGreen wasn't being loaded because my Clover version was too old - newer versions of Clover had already had updated the patch targets for .4 to support kext loading from outside of the standard locations.    
 So yeah, update your Clover before macOS!
