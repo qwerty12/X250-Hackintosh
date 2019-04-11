@@ -1,6 +1,8 @@
-To clone this repo, run `git clone --recursive https://github.com/qwerty12/X250-Hackintosh.git`. Otherwise, you'll be missing a ton of files.
-
 # X250 Mojave
+
+![](https://raw.githubusercontent.com/qwerty12/X250-Hackintosh/screenshots/screenshot.png)
+
+To clone this repo, run `git clone --recursive https://github.com/qwerty12/X250-Hackintosh.git`. Otherwise, you'll be missing a ton of files.
 
 Follow whatever is written here at your own risk. I do not take responsibility for any damage to your device or files caused by following anything on this page.
 
@@ -28,7 +30,7 @@ Card reader | Realtek something | sinetek's driver (syscl's fork) might work som
 So yeah, update your Clover before macOS!
 * The batteries drain quite fast. I'm hoping that this is because of me running my laptop at 1680x944 (3360x1888 "Retina"), setting battery thresholds on batteries that are already old and not allowing the audio chip to go into powersaving mode when headphones are plugged in
 * I don't believe Mojave supports VGA out, and I've never tested the MiniDP port. If you do get either working, and changes to the files in this repo were needed in order to do so, please create a PR.
-* With a Clover update, sleeping would cause the UEFI to report a CMOS checkum error on reboot. This guide uses VirtualSMC instead of the venerable FakeSMC because when the CMOS checksum was invalidated, the Lenovo UEFI was fine about it, but with FakeSMC (or perhaps Clover's SMCHelper-64.efi driver) a hang would occur at the point before Clover could hand over booting to the macOS kernel. While FakeSMC can display your fan speed with ACPISensors, VirtualSMC has no issues with booting whenever the CMOS checksum was bad. 
+* This guide uses VirtualSMC instead of the venerable FakeSMC because when the CMOS checksum was invalidated, the Lenovo UEFI was fine about it, but with FakeSMC (or perhaps Clover's SMCHelper-64.efi driver) a hang would occur at the point before Clover could hand over booting to the macOS kernel. While FakeSMC can display your fan speed with ACPISensors, VirtualSMC has no issues with booting whenever the CMOS checksum was bad. 
 * While Lenovo finally got rid of their terrible Wi-Fi card whitelist, meaning that one can now switch out the Intel Wi-Fi card (which I do think is better than the DW1830), the UEFI is still locked nevertheless. While it's not really a huge issue, we will forever be at the mercy of the developers behind the following software:
     * Clover to update the "CPU power management patch for haswell with locked msr" patch built into it. MSR 0xE2 is locked by the Lenovo UEFI and a KP happens when macOS attempts to set it - the Clover patch nullifies such attempts.
     * WhateverGreen to patch the FB kexts to work with 32MB DVMT-prealloc. The Lenovo UEFI only allocates 32MB, and the EFI variable that controls it is locked. As explained by RehabMan, the Apple framebuffer kexts expect at least 64MB and will KP when it can't get this. The UEFI 256/512 MB GPU memory setting has no relation to this ☹️
@@ -127,7 +129,7 @@ Place the following kexts into /Volumes/EFI/EFI/CLOVER/kexts/Other (in brackets 
 
 * You can optionally install the modified [LiluFriend](https://github.com/PMheart/LiluFriend) kext included in this repository. It's not needed when using Clover to load Lilu and Lilu plugin kexts, but should you wish to move everything to /Library/Extensions, you'll find it a huge help
 
-* [RTCMemoryFixup](https://github.com/acidanthera/RTCMemoryFixup/releases) - absolutely needed for reliable sleep and wake. The Clover RTC patches do not do anything for this laptop and have been disabled. (1.0.3)
+* [RTCMemoryFixup](https://github.com/acidanthera/RTCMemoryFixup/releases) - absolutely needed for reliable sleep and wake. The config.plist here has an appropriate `rtcfx_exclude` set with offsets I found that stop the laptop from saying that the CMOS checksum is wrong on the next reboot after resuming from suspend. The Clover RTC patches do not do anything for this laptop and have been disabled. (1.0.3)
 
 * [USBInjectAll](https://bitbucket.org/RehabMan/os-x-usb-inject-all/downloads/) (0.7.1)
 
