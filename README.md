@@ -2,9 +2,11 @@
 
 ![](https://raw.githubusercontent.com/qwerty12/X250-Hackintosh/screenshots/screenshot.png)
 
+Follow whatever is written here at your own risk. I do not take responsibility for any damage to your device or files caused by following anything on this page.
+
 To clone this repo, run `git clone --recursive https://github.com/qwerty12/X250-Hackintosh.git`. Otherwise, you'll be missing a ton of files.
 
-Follow whatever is written here at your own risk. I do not take responsibility for any damage to your device or files caused by following anything on this page.
+I do not keep a complete EFI folder here. The TL;DR version of this is something along the lines of use the SSDTs from here, grab the config.plist from here, install Clover with the drivers I mention and install the kexts I mention.
 
 ### Specs of my X250
 
