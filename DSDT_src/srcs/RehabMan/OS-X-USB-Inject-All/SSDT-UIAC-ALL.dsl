@@ -53,11 +53,11 @@ DefinitionBlock ("", "SSDT", 2, "hack", "_UIAC", 0)
                         "UsbConnector", 255,
                         "port", Buffer() { 7, 0, 0, 0 },
                     },
-                    /*"HS08", Package() // Presumably the webcam
+                    "HS08", Package() // Actually the webcam - thanks Wheatley
                     {
                         "UsbConnector", 255,
                         "port", Buffer() { 8, 0, 0, 0 },
-                    },*/
+                    },
                     "SS01", Package() // Right port (USB 3)
                     {
                         "UsbConnector", 3,

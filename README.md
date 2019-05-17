@@ -4,10 +4,10 @@
 
 Follow whatever is written here at your own risk. I do not take responsibility for any damage to your device or files caused by following anything on this page.
 
-To clone this repo, run `git clone --recursive https://github.com/qwerty12/X250-Hackintosh.git`. Otherwise, you'll be missing a ton of files.
+**This repository makes use of submodules** So, to clone this repo, run `git clone --recursive https://github.com/qwerty12/X250-Hackintosh.git`. Otherwise, you'll be missing a ton of files.
 
 I do not keep a complete EFI folder here. While it does undeniably make things easier, I don't want to be distributing old versions of software, and nor do I want the responsibility of keeping this repository up to date with every kext etc. update.
-The TL;DR version of this is something along the lines of use the SSDTs from here, grab the config.plist from here, install Clover with the drivers I mention and install the kexts I mention.
+The TL;DR version of this is something along the lines of use the SSDTs from [here](https://github.com/qwerty12/X250-Hackintosh/tree/master/DSDT_src/patched), grab the config.plist from [here](https://raw.githubusercontent.com/qwerty12/OS-X-Clover-Laptop-Config/master/config_HD5300_5500_6000.plist), [install Clover with the drivers I mention and install the kexts I mention](https://github.com/qwerty12/X250-Hackintosh#clover-configuration).
 
 ### Specs of my X250
 
@@ -17,36 +17,38 @@ CPU  | 2.3 GHz Intel Core i5-5300u (vPro <sub><sup><sub><sup>ugh</sup></sub></su
 RAM  | Crucial 16 GB 1600 MHz DDR3 | 
 IGPU | Intel HD 5500 | QE/CI works, of course
 Screen | 1920x1080 LG LP125WF2-SPB2 (00HN899) | Not touchscreen, and brightness control works in Windows
-Audio | Realtek ALC3232 | Speakers and headphone output works, as long as the modified ALCPlugFix is installed. *No idea about the microphone*
+Audio | Realtek ALC3232 | Speakers and headphone output works, as long as the modified ALCPlugFix is installed
 Wi-Fi | Dell DW1830 (Broadcom BCM43602) | The original Intel 7265 (with BT) was replaced, as it's not supported by macOS
 Bluetooth | Dell DW1830 (Broadcom BCM20703A1) | AirDropping to and from an iPad 4 works fine
 Ethernet | Intel I218-LM | No idea if it actually works, but it shows up fine and Mieze's driver is well tested at this point in time
 Touchpad | Synaptics PS/2 | The TrackPoint, with VoodooPS2Controller, also works should you feel more inclined to use that instead
-WWAN | *Not present* | If your X250 has a WWAN card, then the DW1830 probably isn't the best choice as the DW1830 has three antenna ports
-SSD | Samsung 860 EVO 512 GB SATA | Works fine, just remember to run `sudo trimforce enable` at some point
-Card reader | Realtek something | sinetek's driver ([syscl's fork](https://github.com/syscl/Sinetek-rtsx)) might work somewhat, but I wouldn't know as I keep the CR disabled in the UEFI
+WWAN | *Not present* | If your X250 has a WWAN card, then the DW1830 probably isn't the best choice as the DW1830 has three antenna ports - I use one of the WWAN antennas for the Wi-Fi card
+SSD | Samsung 860 EVO 512 GB SATA | Works fine. I personally enable TRIM by running `sudo trimforce enable`, but some schools of thought say it's not needed when using APFS
+Card reader | Realtek something | sinetek's driver (recommended: [syscl's fork](https://github.com/syscl/Sinetek-rtsx)) might work somewhat; I have not tested it personally
 
 ### Problems and other things you should be aware of
 
-* I have only tested this X250 with 10.14.3 and 10.14.4 (updated from .3). Dark mode is far too enticing for me to test anything else.
-    * Something that I was unaware of while updating is that loading kexts from Clover's EFI folder (as opposed to /Library/Extensions etc.) is only possible because Clover hotpatches some component to allow this to happen. When I did the update from .3 to .4, I was getting a kernel panic and I wasn't able to see why because of irrelevant information being dumped to the screen. Long story short, it was because WhateverGreen wasn't being loaded - my Clover version was too old. Newer versions of Clover had already had updated the patch targets for .4 to support kext loading from outside of the standard locations.    
-	So yeah, update your Clover before macOS!
+* I have only tested this X250 with 10.14.3, 10.14.4 (updated from .3) and 10.14.5. Dark mode is far too enticing for me to test anything else.
+    * Something that I was unaware of while updating is that loading kexts from Clover's EFI folder (as opposed to /Library/Extensions etc.) is only possible because Clover hotpatches some component to allow this to happen. When I did the update from .3 to .4, I was getting a kernel panic and I wasn't able to see why because of irrelevant information being dumped to the screen. Long story short, it was because WhateverGreen wasn't being loaded as my Clover version was too old. Newer versions of Clover had already had updated the patch targets for .4 to support kext loading from outside of the standard locations.    
+	So, yeah, update your Clover before macOS!
 * The batteries drain quite fast. I'm hoping that this is because of me running my laptop at 1680x944 (3360x1888 "Retina"), setting battery thresholds on already-old batteries and not allowing the audio chip to go into powersaving mode when headphones are plugged in
-* I don't believe Mojave supports VGA out, and I've never tested the MiniDP. If you do get either working, and changes to the files in this repo were needed in order to do so, please create a PR.
-* This writeup uses VirtualSMC instead of the venerable FakeSMC as the former is more resilient if the CMOS checksum gets invalidated. Even the Lenovo UEFI won't reset your settings, but with FakeSMC (or perhaps Clover's SMCHelper-64.efi driver) a hang would occur at the point before Clover could hand over booting to the macOS kernel. FakeSMC has the advantage that it can display the fan speed with ACPISensors.
-* While Lenovo finally got rid of their terrible Wi-Fi card whitelist, meaning that one can now switch out the Intel Wi-Fi card (which I do think is better than the DW1830), the UEFI is still locked nevertheless. While it's not really a huge issue, we will forever be at the mercy of the developers behind the following software:
-    * Clover to update their built in "KernelPm" patch. MSR 0xE2 is locked by the Lenovo UEFI and a KP happens when macOS attempts to set it - the Clover patch nullifies such attempts.
+* I don't believe Mojave supports VGA out, and I've never tested the MiniDP. If you do get either working, and changes to the files in this repo were needed in order to do so, please consider creating a PR.
+* This writeup uses VirtualSMC instead of the venerable FakeSMC as the former is more resilient if the CMOS checksum gets invalidated. Even the Lenovo UEFI won't reset your settings, but with FakeSMC (or perhaps Clover's SMCHelper-64.efi driver) a hang would occur at the point before Clover could hand over booting to the macOS kernel. FakeSMC does however have the advantage that it can display the fan speed with ACPISensors (if the right bit in SSDT-BATT.dsl is uncommented and the DSDT rebuilt).
+* Whilst Lenovo finally got rid of their/IBM's terrible Wi-Fi card whitelist, meaning that one can now switch out the Intel Wi-Fi card (which I do think is better than the DW1830), the UEFI remains locked nevertheless. While it's not really a huge issue, we will forever be at the mercy of the developers behind the following software:
+    * Clover to update their built in "KernelPm" patch. MSR 0xE2 is locked by the Lenovo UEFI and a KP happens when macOS attempts to set it: the Clover patch nullifies such attempts
     * WhateverGreen to patch the FB kexts to work with 32MB DVMT-prealloc. The Lenovo UEFI only allocates 32MB, and the EFI variable that controls it is locked. As explained by RehabMan, the Apple framebuffer kexts expect at least 64MB and will KP when it can't get this. The UEFI 256/512 MB GPU memory setting has no relation to this ☹️
 * Fn+F10, Fn+F11 and Fn+F12 are all configured to send previous track, play/pause and next track respectively. I mean, you can't have surely been expecting anything different from the person who wrote [this](https://github.com/qwerty12/X250-F10-F12-MediaKeys). You can edit Goldfish64/Hackintosh/Lenovo-ThinkPad-T450/SSDTs/SSDT-FNKEY.dsl for keybindings more appropriate for the labels should you wish.
-* I use the `MacBookAir7,2` SMBIOS profile. While `MacBookPro12,1` also works, it has terrible things like "TCP Keep Alive when sleeping" enabled.
+* I use the `MacBookAir7,2` SMBIOS profile. While `MacBookPro12,1` also works, it has terrible things like "TCP Keep Alive when sleeping" enabled - which, without IGBE's _PRW being hooked (the DSDT here does that), causes instant wakeup from sleep
 
 ### Thanks to
 
 * [RehabMan](https://github.com/RehabMan) - his guides on preparing a macOS installer USB, hotpatching the DSDT with Clover and SSDTs etc. are superb. The config.plist used here is based on his config_HD5300_5500_6000.plist and many of his SSDT hotpatches are used here
 
-* [Goldfish64](https://github.com/Goldfish64) - I'm thankful that a developer with such low-level ACPI, UEFI etc. experience worked on Hackintoshing his T450 (same era as the X250, which means similar/same chipsets and ACPI code). His Clover ACPI hotpatches to fix the dual battery reporting, EC reads and writes etc. work great on the X250 and that's probably one of the main reasons why this Hackintosh setup has been stable, for the most part
+* [Goldfish64](https://github.com/Goldfish64) - I'm thankful that a developer with such low-level ACPI, UEFI etc. experience worked on Hackintoshing his T450 (same era as the X250, which means they share similar/the same chipsets and ACPI code). His Clover ACPI hotpatches to fix the dual battery reporting, EC reads and writes etc. work great on the X250
 
-* [Sniki](https://github.com/Snikii) - a computer without sound is a terrible thing for most people. That thankfully is not the case here thanks to Sniki's modified AppleHDA kext, and his modified version of goodwin's ALCPlugFix, which makes sure sound works over headphones too
+* [Sniki](https://github.com/Snikii) - a computer without sound is a terrible thing for most people. That thankfully is not the case here thanks to Sniki's modified AppleHDA kext, and his modified version of goodwin's ALCPlugFix, which ensures sound works over headphones too
+
+* wheatleyisamoron - Wheatley is awesome, and he took the time to confirm that the microphone and camera works. He also told me about the Ethernet driver being a likely cause of the laptop crashing when resuming
 
 Also thanks to the Clover developers, Mieze for her Intel Ethernet driver, the acidanthera collective (most of the third-party kexts I have installed are theirs!), goodwin for ALCPlugFix, Dolnor/TimeWalker75a for CodecCommander and nguyenlc1993 for his ASUS K501L guide showing how to tune AppleGraphicsPowerManagement.kext and X86PlatformPlugin.kext to have the CPU idle at 800MHz and the GPU minimum speed one floor lower.
 
@@ -56,7 +58,7 @@ Also thanks to the Clover developers, Mieze for her Intel Ethernet driver, the a
 
 As it's 2019, I assume you are booting your current OS in UEFI mode. This writeup has never been tested - and never will be - with Clover in legacy mode.
 
-Update the BIOS too. This writeup was written on a laptop running 1.35. Use the latest available. This writeup doesn't depend on a pre-patched DSDT.
+You can update the BIOS too. This writeup was written on a laptop running 1.35. Use the latest UEFI version available. As this guide utilises Clover ACPI hotpatching, this writeup doesn't depend on a pre-patched DSDT specific to a certain UEFI version and configuration.
 
 Assuming the default settings are applied, make the following changes to the UEFI configuration:
 
@@ -65,10 +67,10 @@ Setting   | Value  | Notes |
 Wake on LAN | Off | Whether it actually works in macOS I don't know, but by leaving it off, you might eliminate one cause of early wakeup from sleep
 Always on USB | Off | This might be safe to leave on, I have no idea, but all my USB testing has been done with it off
 USB 3.0 Mode | Enabled | Must be done. The SSDT, thanks to RehabMan, will turn off the EHCI controller, leaving only the XHCI controller present. Externally, this laptop only has USB 3.0 ports anyway. The only reason this would need to be disabled is if you're running a very old OS that has no USB 3.0 support.
-Total Graphics Memory | 512MB | Optional if you're using the standard 1366x768 screen; however, if you're using the 1920x1080 screen, then you will (anecdotally) see better performance with higher resolutions when this is bumped up.
+Total Graphics Memory | 512MB | Optional if you're using the standard 1366x768 screen; however, if you're using the 1920x1080 screen, then you will (anecdotally) see better performance with higher resolutions with this bumped up.
 Intel Rapid Start Technology | Off | The OS needs to support this, which macOS doesn't, and according to [fraisdos125](https://www.tonymacx86.com/threads/guide-lenovo-x250.206197/), having it on may cause macOS not to boot.
 Security Chip | Disabled | I don't know if macOS even supports a TPM, but according to fraisdos125, waking up from sleep may fail with it enabled.
-Intel VT-d Feature | Disabled | Keep this on if you use VT-d in other OSes, as `dart=0` and dropping of the DMAR table will disable VT-d in macOS anyway
+Intel VT-d Feature | Disabled | You can keep this on if you use VT-d in other OSes, as the bootarg `dart=0` and the dropping of the DMAR table will disable VT-d in macOS anyway
 Secure Boot | Disabled | Unsurprisingly, Clover isn't signed. 
 CSM Support | Yes | You might be able to keep this off if you set a screen resolution in Clover lower than your standard one, but with this off and Clover and macOS set to use the native/same resolution of your screen, you'll see a very distorted logon screen that can only be fixed if you put your laptop to sleep and quickly cancel it. Clover can set the screen resolution to 1920x1080 in CSM mode, so it's not too big a loss.
 Ethernet Adapter | Enabled | Even if you don't use the Ethernet card, MacBookPro SMBIOS profiles expect it as en0, not the Wi-Fi adapter
@@ -82,19 +84,19 @@ Install the mentioned `mount_efi` script in that thread at the first available o
 
 There are tools and guides out there for Windows allowing the creation of an Apple recovery USB, from which you can install macOS proper. I did not test this method.
 
-However, you should use a newer Clover version (not RehabMan's Clover), the config.plist from this repository, the recommended kexts and UEFI drivers. As RehabMan's guide explains, you'll need to install Clover again after managing to boot into an installed macOS copy on your disk drive using your Clover USB. The config.plist, kexts etc. needed will still be the same.
+However, contrary to the guide, you should use a newer Clover version (not RehabMan's Clover), the config.plist from this repository, the recommended kexts and UEFI drivers. As RehabMan's guide explains, you'll need to install Clover again after managing to boot into an installed macOS copy on your disk drive using your Clover USB. The config.plist, kexts etc. needed will still be the same.
 
 #### Clover configuration
 
-Install Clover from [here](https://github.com/Dids/clover-builder/releases). I am running 4910 currently but strive to use the latest version. RehabMan's guide linked above goes into more detail on installing Clover. I would recommend selecting the following options in the Clover installer:
+Install Clover from [here](https://github.com/Dids/clover-builder/releases). I am currently running 4928 but use the latest version where possible. RehabMan's guide linked above goes into more detail on installing Clover. I would recommend selecting the following options in the Clover installer:
 
 * Clover for UEFI booting only
 * Install Clover in the ESP
 * Themes (optional - if you can spare the space on the EFI partition):
-    * Black Green Moody (used by stock RehabMan configs)
+    * Black Green Moody (just in case: it's used by stock RehabMan configs)
     * Clovy (a vast improvement on the default embedded theme)
 * UEFI Drivers
-    * De-select AudioDxe-64 (unless you really want to hear the macOS chime)
+    * De-select AudioDxe-64 (unless you really want to hear the Mac chime)
     * De-select DataHubDxe-64 (it's not needed on the X250)
     * Select FSInject-64
     * De-select SMCHelper-64 (we're using VirtualSMC which comes with its own UEFI driver)
@@ -104,26 +106,26 @@ Install Clover from [here](https://github.com/Dids/clover-builder/releases). I a
     * Select HFSPlus
 
 You should also install VirtualSmc.efi into drivers64UEFI. This driver comes with the VirtualSMC zip file, which is linked in the kexts list below.
-Making sure the EFI partition is mounted, copy X250-Hackintosh/DSDT_src/config.plist into /Volumes/EFI/EFI/CLOVER/
+Making sure the EFI partition is mounted (search `mount_efi` on this page), copy X250-Hackintosh/DSDT_src/srcs/RehabMan/OS-X-Clover-Laptop-Config/config_HD5300_5500_6000.plist into /Volumes/EFI/EFI/CLOVER/ and rename it to config.plist
 
-Regarding the APFS and HFS drivers: you'll almost certainly need HFSPlus for booting the macOS installer. The Mojave installer forces the use of APFS on a SSD, so you'll need ApfsDriverLoader. You can get rid of one driver if you're using HFS or APFS everywhere, but keeping both around is the safest option.
-I haven't had any bad experiences with APFS personally in the short time I have been using macOS. APFS, unlike HFS+, supports sparse files. 
+Regarding the APFS and HFS drivers: you'll almost certainly need HFSPlus for booting the macOS installer. The Mojave installer forces the use of APFS on a SSD, so you'll need ApfsDriverLoader to boot the resulting installation. You can get rid of one driver if you're using HFS or APFS everywhere, but keeping both around is the safest option.
+I haven't had any bad experiences with APFS personally in the short time I have been using a Hackintosh. APFS, unlike HFS+, supports sparse files. Something to bear in mind if you use NZBGet.
 
 You might want to edit config.plist for the following:
 
 * Removing `NoEarlyProgress` if you want to see the Clover text on bootup before the main Clover screen shows
 
-* Removing `TextOnly`. Clovy is a great looking theme, but I prefer the simplicity of having no theme.
+* Removing `TextOnly`. While I prefer the simplicity of having no theme, Clovy is a great looking theme
 
-* Changing the theme
+* Actually changing the theme
 
-* Changing the language
+* Changing the language from English
 
-* Removing `-v` from the Boot Arguments. While I recommend keeping this on for the first few days or so so that you may find out what's going wrong during boot, the Apple logo and macOS loading bar do look nicer
+* Removing `-v` from the Boot Arguments. While I recommend keeping this on for the first few days or so so that you may find out what's going wrong during boot, having the Apple logo and macOS loading bar display on boot makes for a nicer startup experience
 
 * Removing `amfi_get_out_of_my_way=1` from the boot arguments. This argument is there to allow mySIMBL to work. While it's not really an issue on a laptop where SIP has to be realistically disabled and unsigned kexts allowed to load, remove it if you feel the security benefits of AMFI are worth having.
 
-* Removing `BooterCfg` - with this set to `log=0`, the text displayed by Clover when a macOS install is selected but before macOS is actually booting will not be displayed (though AptioMemoryFix will still write away)
+* Removing `BooterCfg` - with this set to `log=0`, the text displayed by Clover when a macOS install is selected but before macOS is actually booting will not be displayed (though AptioMemoryFix will still write away). This might be better set in the NVRAM?
 
 Place the following kexts into /Volumes/EFI/EFI/CLOVER/kexts/Other (in brackets are the versions I have installed at the time of writing this writeup, but install the latest versions):
 
@@ -141,19 +143,20 @@ Place the following kexts into /Volumes/EFI/EFI/CLOVER/kexts/Other (in brackets 
 
 * [VoodooPS2Controller](https://bitbucket.org/RehabMan/os-x-voodoo-ps2-controller/downloads/) (1.9.2)
 
-* [WhateverGreen](https://github.com/acidanthera/WhateverGreen/releases) (1.2.7)
+* [WhateverGreen](https://github.com/acidanthera/WhateverGreen/releases) (1.2.8)
 
-* [VirtualSMC](https://github.com/acidanthera/VirtualSMC/releases) (1.0.2)
+* [VirtualSMC](https://github.com/acidanthera/VirtualSMC/releases) (1.0.3)
     * SMCBatteryManager.kext too for working battery status
     * SMCProcessor.kext for CPU temperature etc.
 
+[Kext Updater](https://bitbucket.org/profdrluigi/kextupdater) is a handy tool for keeping many of the kexts mentioned above up to date. You may find [Hackintool](https://www.insanelymac.com/forum/topic/335018-hackintool-v251/) useful too.
+
 Copy DSDT_src/patched/SSDT-CPUF.aml and DSDT_src/patched/SSDT-IALL.aml into /Volumes/EFI/EFI/CLOVER/ACPI/patched.
 
-You can run `DSDT_src\produceSSDTs.sh` to generate your own version of the aml files mentioned above.
+If you want to create your own version of the AML files mentioned above from the dsl files, you can run `DSDT_src\produceSSDTs.sh`. You will need the XCode Command Line Tools (for `patch` and `make` at least) and [RehabMan's iasl fork](https://bitbucket.org/RehabMan/acpica/) installed.
 
-SSDT-CPUF.aml is produced by a script that comes with CPUFriend, the MacBookAir7,2 power profile is copied, a small diff applied to lower the base resolution to 800MHz and the aml file with that data is produced by the script.    
-SSDT-IALL.aml comes from the SSDTs listed in DSDT_src/srcs/RehabMan/OS-X-Clover-Laptop-Config/hotpatch/SSDT-IALL.dsl. You can add your own SSDTs there and/or edit the SSDTs mentioned with your own changes and then run `DSDT_src\produceSSDTs.shsh` to place a new SSDT-IALL.aml into the `patched` folder which you can then copy into Clover.    
-You will need the XCode Command Line Tools (for `patch` and `make` at least) and [RehabMan's iasl fork](https://bitbucket.org/RehabMan/acpica/) installed to use the script.    
+SSDT-CPUF.aml is produced by a script that comes with CPUFriend; the MacBookAir7,2 power profile is copied, a small diff applied to lower the base resolution to 800MHz and the aml file with that data is produced by the script.    
+SSDT-IALL.aml comes from the SSDTs listed in DSDT_src/srcs/RehabMan/OS-X-Clover-Laptop-Config/hotpatch/SSDT-IALL.dsl. You can add your own SSDTs there and/or edit the SSDTs mentioned with your own changes and then run `DSDT_src\produceSSDTs.sh` to place a new SSDT-IALL.aml into the `patched` folder which you can then copy into Clover.    
 
 `DSDT_src/srcs/RehabMan/OS-X-Voodoo-PS2-Controller/SSDT-Thinkpad_Clickpad.dsl` has a (disabled) hack to set battery charging thresholds on both batteries. It's not the best place to put it, but I needed something that I know would execute at least once on startup without being trigged by a kext I wrote. It's there should you wish to enable it by uncommenting `QTHR`, and changing the thresholds set inside said function.
 
@@ -166,7 +169,7 @@ When you have time, I recommend looking at the patches applied in the config.pli
 
 * While AppleALC is probably generally considered the way forward when it comes to audio (layout 28 works with the ALC3232), I have had better experiences with Sniki's patched AppleHDA kext (and CodecCommander & ALCPlugFix). So that is what this writeup will aid you in installing.
 
-* I keep the card reader, webcam and microphone disabled in the UEFI. I have no idea if they work under macOS, or in general. For the webcam, OS-X-USB-Inject-All/SSDT-UIAC-ALL.dsl has a commented-out definition for the port it may appear on. The webcam will not show up unless the SSDT is edited. Assuming I got the right port an' all. My X250 does not have a touchscreen; you may need to add whatever port it shows up on to the aformentioned dsl file.
+* I keep the card reader, webcam and microphone disabled in the UEFI. Wheatley has kindly confirmed that the microphone and webcam work. My X250 does not have a touchscreen; you may need to add whatever port it shows up into OS-X-USB-Inject-All/SSDT-UIAC-ALL.dsl. To get USBInjectAll to attempt its magic with all the USB ports found, you will need to remove its section from the DSDT temporarily.
 
 Place [CodecCommander](https://bitbucket.org/RehabMan/os-x-eapd-codec-commander/downloads/) (2.7.1) into /Library/Extensions.
 
@@ -231,26 +234,26 @@ if dev then
 end
 ```
 
-With Hammerspoon running, plugging the headphones will start Mac Audio Keepalive and then stop it when unplugging them. As already mentioned, for some reason this problem doesn't occur when the speakers are active.
+With Hammerspoon running, plugging the headphones will start Mac Audio Keepalive and then stop it when unplugging them. As already alluded to, for some reason this problem doesn't occur when the speakers are active.
 
 #### Getting the DW1830 working for Wi-Fi and Bluetooth
 
-Again, the Intel 7265 that comes with the X250 is a decent card, but it doesn't work with macOS. There have been various attempts over the years to port the Linux or BSD drivers to macOS but none seem to have really panned out. One alternative is to use a USB dongle, but these do not integrate with macOS's native Wi-Fi solution AirPort and require the use of their unwieldy software to operate the dongle. Not ideal.
+Again, the Intel 7265 that comes with the X250 is a good card, but it doesn't work with macOS. There have been various attempts over the years to port the Linux or BSD drivers to macOS but none seem to have really panned out. One alternative is to use a USB dongle, but these do not integrate with macOS's native Wi-Fi solution AirPort and require the use of their unwieldy software to operate the dongle. Not ideal.
 
 The Broadcom-based Dell DW1830 works in Windows 10 (not any earlier versions AFAICT) with a driver you can find on the Dell website, and natively in macOS.
 
 Before I go on, I will point out the following:
 
-* The 7265 wants only two antennas, but the DW1830 expects three. Some say that plugging one into J2 is optional, some say it's needed to help the card balance the load and not overheat. I have no idea which is true.
+* The 7265 wants only two antennas, but the DW1830 expects three. Some say that plugging one into J2 is optional, some say it's needed to help the card balance the load and not overheat. I have no idea what is true.
     * My "solution" was to use one of the additional antenna cables designed for the WWAN card, since my X250 doesn't have a WWAN card. It might be placebo, but [WiFriedX](https://github.com/mariociabarra/wifriedx/) seems to have increased the reliabilty of my connection (if you can live with disabling WiFried whenever you want to use AirDrop).
 
-No FakePCIID kexts etc. needed.
+FakePCIID kexts etc. are not needed.
 
-For Wi-Fi, the one kext I do recommend you install (*to the same place where Lilu.kext resides*) is [AirportBrcmFixup](https://github.com/acidanthera/AirportBrcmFixup/releases) (1.1.9). `brcmfx-country=#a` has already been set in the config.plist boot arguments. Before installing this kext and setting this specific country code, my download speeds from sites was a fraction of what it should have been (and what I was getting from Windows).
+For Wi-Fi, the one kext I do recommend you install (*to the same place where Lilu.kext resides*) is [AirportBrcmFixup](https://github.com/acidanthera/AirportBrcmFixup/releases) (1.1.9). `brcmfx-country=#a` has already been set in the config.plist boot arguments. Before installing this kext and setting this specific country code, my download speeds was a fraction of what it should have been (and what I was getting from Windows).
 
 ##### Bluetooth, Bluetooth, Bluetooth...
 
-Sometimes, turning it off means you can't turn it back on again. No idea why. 
+Sometimes, turning it off means you can't turn it back on again. I have no idea why.
 
 Anyway, for Bluetooth to work, you need [this](https://github.com/RehabMan/OS-X-BrcmPatchRAM). Read the instructions there carefully. Here's my summary: to load the kext at boot, you need to do one of the following:
 
@@ -258,8 +261,8 @@ Anyway, for Bluetooth to work, you need [this](https://github.com/RehabMan/OS-X-
 
 * The preferred option is to install BrcmPatchRAM2.kext and BrcmFirmware**Repo**.kext to /Library/Extensions
 
-However, I personally do not have the kext load at boot. If you look at the config.plist, you'll see that in the boot arguments the BRCM kext delays are already set pretty high - values from the README of the original project. In my experience, it still wasn't enough to avoid the *3* minute delays (!) I'd sometimes get on boot if the kext wasn't able to upload the firmware to the DW1830's BT chip. And I daren't set it any higher. I don't actually use Bluetooth myself, so the delay was unacceptable to me, even if I thought that it's nice to be able to still have the option.    
-I have the kext load when I log in, instead. This is not a great idea if you rely on external Bluetooth peripherals being available at the login screen, but you'll always have a keyboard and mouse available on an X250...
+However, I personally do not have the kext load at boot. If you look at the config.plist here, you'll see that in the boot arguments the BRCM kext delays are already set pretty high - values taken from the README of the original project. In my experience, it still wasn't enough to avoid the *3* minute delays (!) I'd sometimes get on boot if the kext wasn't able to upload the firmware to the DW1830's BT chip. And I do not wish to set it any higher. I don't actually use Bluetooth myself, so the delay was unacceptable to me, but I'd still like to have the choice of being able to use Bluetooth.    
+So I have the kext load when I log in, instead. This is not a great idea if you rely on external Bluetooth peripherals being available at the login screen, but you'll always have a keyboard and mouse available on an X250...
 
 I put BrcmFirmwareRepo.kext into /Library/Extensions (you must `chmod` and `chown` this properly as was demonstrated in the AppleHDA section) and BrcmPatchRAM2.kext into /kexts. Again, permissions must be set correctly (755, root:wheel) on the /kexts folder and BrcmPatchRAM2.kext. 
 
@@ -282,7 +285,7 @@ After you've set up the kexts, open the Bluetooth Preference Pane and tick the o
 I can't explain this better than P1LGRIM's [
 An iDiot's Guide To iMessage](https://www.tonymacx86.com/threads/an-idiots-guide-to-imessage.196827/) can. I've had a successful experience with it twice. Follow the given instructions to the letter and you'll be OK.
 
-Though when you use Clover Configurator, choose `MacBookAir7,2`, don't load your current config into it and save the generated config.plist elsewhere. You can then manually put the SMBIOS section from the generated config.plist into your current config.plist on the EFI partition using a text editor.
+However, when you use Clover Configurator, don't load your current config into it, choose `MacBookAir7,2`, and save the generated config.plist elsewhere. You can then manually put the SMBIOS section from the generated config.plist into your current config.plist on the EFI partition using a text editor.
 
 #### Getting the iGPU to idle one step lower
 
@@ -308,7 +311,7 @@ If you have a 1080p panel in your X250 (attempting this with a 1366x768 screen i
 
 To enable Retina mode, I recommend using [one-key-hidpi](https://github.com/xzhih/one-key-hidpi/). It's very easy to use, and will enable the Retina-style Display Preference Panel (even if the resolutions don't exactly match up with the description).
 
-If you want to do it by hand, use usr-sse2's [fork of RDM](https://github.com/usr-sse2/RDM/). Use its edit function and add the following resolutions:
+If you wish to do it somewhat more manually, use usr-sse2's [fork of RDM](https://github.com/usr-sse2/RDM/). Use its edit function and add the following resolutions:
 
 Horizontal   | Vertical  | HiDPI |
 ---|---|---|
@@ -339,7 +342,7 @@ Log out and log in again.
 
 #### Making the Wi-Fi toggle key work
 
-This isn't the best solution out there - this will not work at the login screen or in secure password entry prompts - but I simply do not have the time nor the knowledge to implement something compatible with the existing Lenovo hotkey system to detect Fn keypresses.
+This isn't the best solution out there - this will not work at the login screen or in secure password entry prompts - but I simply do not have the time nor knowledge to implement something compatible with the existing Lenovo hotkey system to detect Fn keypresses.
 
 With the SSDT here, pressing the Wi-Fi key will send F17 to the system.
 
@@ -361,7 +364,7 @@ This assumes you're using a Wi-Fi and Bluetooth solution natively supported by m
 
 #### Disable hibernation
 
-Hibernation *might* work if you install acidanthera's HibernationFixup, because RTCMemoryFixup isn't blocking the offsets used by hibernation. I've certainly not attempted it here.
+Hibernation *might* work if you install acidanthera's HibernationFixup, because RTCMemoryFixup isn't blocking the offsets used by hibernation. I've certainly not tried hibernation here.
 
 The safe thing to do is to disable hibernation by running the following:
 
