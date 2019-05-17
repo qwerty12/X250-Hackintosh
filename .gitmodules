@@ -1,6 +1,3 @@
-[submodule "DSDT_src/srcs/acidanthera/CPUFriend"]
-	path = DSDT_src/srcs/acidanthera/CPUFriend
-	url = https://github.com/acidanthera/CPUFriend.git
 [submodule "DSDT_src/srcs/Goldfish64/Hackintosh"]
 	path = DSDT_src/srcs/Goldfish64/Hackintosh
 	url = https://github.com/qwerty12/Hackintosh.git
