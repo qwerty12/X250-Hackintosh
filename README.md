@@ -131,8 +131,6 @@ Place the following kexts into /Volumes/EFI/EFI/CLOVER/kexts/Other (in brackets 
 
 * [Lilu](https://github.com/acidanthera/Lilu/releases) (1.3.5)
 
-* [IntelMausiEthernet](https://github.com/Mieze/IntelMausiEthernet/releases) - even if you don't plan on using the Ethernet card, it helps with iCloud etc. if the Ethernet card corresponds to the `en0` device on the system (2.4.1d1)
-
 * You can optionally install the modified [LiluFriend](https://github.com/PMheart/LiluFriend) (dependencies added for the Lilu-dependent kexts recommended in this writeup) kext included in this repository. It's not needed when using Clover to load Lilu and Lilu plugin kexts, but should you wish to move everything to /Library/Extensions, you'll find it a huge help
 
 * [RTCMemoryFixup](https://github.com/acidanthera/RTCMemoryFixup/releases) - needed for more reliable sleep and wake. The config.plist here has an appropriate `rtcfx_exclude` set with offsets I found that stop the laptop from saying that the CMOS checksum is wrong on the next reboot after resuming from suspend. The Clover RTC patches do not do anything for this laptop and have been disabled. (1.0.3)
@@ -147,7 +145,15 @@ Place the following kexts into /Volumes/EFI/EFI/CLOVER/kexts/Other (in brackets 
     * SMCBatteryManager.kext too for working battery status
     * SMCProcessor.kext for CPU temperature etc.
 
-[Kext Updater](https://bitbucket.org/profdrluigi/kextupdater) is a handy tool for keeping many of the kexts mentioned above up to date. You may find [Hackintool](https://www.insanelymac.com/forum/topic/335018-hackintool-v251/) useful too.
+Ethernet:
+
+Even if you don't plan on using the Ethernet card, it helps with iCloud etc. if the Ethernet card corresponds to the `en0` device on the system instead of the Wi-Fi card. 
+
+Here I would usually recommend to install [IntelMausiEthernet](https://www.insanelymac.com/forum/files/file/396-intelmausiethernet/) (2.4.1d1). However, Wheatley informed me that it's been causing his laptop to kernel panic while sleeping (and probably mine too).
+2.5.0d0 of Mieze's driver [*may* have a fix](https://github.com/Mieze/IntelMausiEthernet/commit/f3c69cec20efd24fa467cf16f44ccaae61336766) for this. I've not been able to test it yet. 
+[2.5.0d0](https://www.insanelymac.com/forum/topic/304235-intelmausiethernetkext-for-intel-onboard-lan/?page=35&tab=comments#comment-2651490) - if it works - would probably be the better driver to use. 
+
+Else, Wheatley informs me, replacing it with AppleIntelE1000e.kext stopped the KPs for him; however, the Ethernet connection fails after a longer sleep. Rebuilding SSDT-IALL without SSDT-LANCPRW.dsl (and removing the corresponding "change IGBE._PRW to XPRW" patch inside config.plist) might fix that driver. Although, maybe not. I will try Mieze's 2.5.0, see if I still get any crashes while sleeping and update this writeup accordingly.
 
 Copy DSDT_src/patched/SSDT-IALL.aml into /Volumes/EFI/EFI/CLOVER/ACPI/patched.
 
@@ -159,6 +165,8 @@ SSDT-IALL.aml comes from the SSDTs listed in DSDT_src/srcs/RehabMan/OS-X-Clover-
 
 Injection of the audio layout number is done from the SSDT, see RehabMan's SSDT-HDEF and SSDT-HDEF. For the SSDTs where I made many changes, the repositories containing them originally are included - run `git diff HEAD^` in each folder. This was done so that my changes can easily be separated from those of the original repositories, should you try to use parts of this writeup to run a version of macOS other than one this writeup targets.
 When you have time, I recommend looking at the patches applied in the config.plist, produceSSDTs.sh and SSDT-IALL.dsl to understand what is injected. You'll have a far better understanding of what is going on and what to possibly disable in case of problems.
+
+[Kext Updater](https://bitbucket.org/profdrluigi/kextupdater) is a handy tool for keeping many of the kexts mentioned above up to date. You may find [Hackintool](https://www.insanelymac.com/forum/topic/335018-hackintool-v251/) useful too.
 
 ### Post-install stuff
 
