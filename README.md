@@ -58,7 +58,7 @@ Also thanks to the Clover developers, Mieze for her Intel Ethernet driver, the a
 
 As it's 2019, I assume you are booting your current OS in UEFI mode. This writeup has never been tested - and never will be - with Clover in legacy mode.
 
-You can update the BIOS too. This writeup was written on a laptop running 1.35. Use the latest UEFI version available. As this guide utilises Clover ACPI hotpatching, this writeup doesn't depend on a pre-patched DSDT specific to a certain UEFI version and configuration.
+You can update the BIOS too. This writeup was written on a laptop running 1.35. Use the latest UEFI version available. As this writeup utilises Clover ACPI hotpatching, there is no dependency on a pre-patched DSDT specific to a certain UEFI version and configuration.
 
 Assuming the default settings are applied, make the following changes to the UEFI configuration:
 
@@ -131,8 +131,6 @@ Place the following kexts into /Volumes/EFI/EFI/CLOVER/kexts/Other (in brackets 
 
 * [Lilu](https://github.com/acidanthera/Lilu/releases) (1.3.5)
 
-* [CPUFriend](https://github.com/acidanthera/CPUFriend/releases) (Optional. I would install this after installing macOS. If installed and using the recommended `MacBookAir7,2` SMBIOS profile, the processor will idle at 800 MHz instead of 1.3 GHz. This was done with the i5-5300U that's in my X250 in mind, so perhaps don't install this kext if you have a different processor?) (1.1.6)
-
 * [IntelMausiEthernet](https://github.com/Mieze/IntelMausiEthernet/releases) - even if you don't plan on using the Ethernet card, it helps with iCloud etc. if the Ethernet card corresponds to the `en0` device on the system (2.4.1d1)
 
 * You can optionally install the modified [LiluFriend](https://github.com/PMheart/LiluFriend) (dependencies added for the Lilu-dependent kexts recommended in this writeup) kext included in this repository. It's not needed when using Clover to load Lilu and Lilu plugin kexts, but should you wish to move everything to /Library/Extensions, you'll find it a huge help
@@ -151,11 +149,10 @@ Place the following kexts into /Volumes/EFI/EFI/CLOVER/kexts/Other (in brackets 
 
 [Kext Updater](https://bitbucket.org/profdrluigi/kextupdater) is a handy tool for keeping many of the kexts mentioned above up to date. You may find [Hackintool](https://www.insanelymac.com/forum/topic/335018-hackintool-v251/) useful too.
 
-Copy DSDT_src/patched/SSDT-CPUF.aml and DSDT_src/patched/SSDT-IALL.aml into /Volumes/EFI/EFI/CLOVER/ACPI/patched.
+Copy DSDT_src/patched/SSDT-IALL.aml into /Volumes/EFI/EFI/CLOVER/ACPI/patched.
 
-If you want to create your own version of the AML files mentioned above from the dsl files, you can run `DSDT_src\produceSSDTs.sh`. You will need the XCode Command Line Tools (for `patch` and `make` at least) and [RehabMan's iasl fork](https://bitbucket.org/RehabMan/acpica/) installed.
+If you want to create your own version of SSDT-IALL from the dsl files, you can run `DSDT_src\produceSSDTs.sh`. You will need the XCode Command Line Tools (for `patch` and `make` at least) and [RehabMan's iasl fork](https://bitbucket.org/RehabMan/acpica/) installed.
 
-SSDT-CPUF.aml is produced by a script that comes with CPUFriend; the MacBookAir7,2 power profile is copied, a small diff applied to lower the base resolution to 800MHz and the aml file with that data is produced by the script.    
 SSDT-IALL.aml comes from the SSDTs listed in DSDT_src/srcs/RehabMan/OS-X-Clover-Laptop-Config/hotpatch/SSDT-IALL.dsl. You can add your own SSDTs there and/or edit the SSDTs mentioned with your own changes and then run `DSDT_src\produceSSDTs.sh` to place a new SSDT-IALL.aml into the `patched` folder which you can then copy into Clover.    
 
 `DSDT_src/srcs/RehabMan/OS-X-Voodoo-PS2-Controller/SSDT-Thinkpad_Clickpad.dsl` has a (disabled) hack to set battery charging thresholds on both batteries. It's not the best place to put it, but I needed something that I know would execute at least once on startup without being trigged by a kext I wrote. It's there should you wish to enable it by uncommenting `QTHR`, and changing the thresholds set inside said function.
@@ -286,6 +283,16 @@ I can't explain this better than P1LGRIM's [
 An iDiot's Guide To iMessage](https://www.tonymacx86.com/threads/an-idiots-guide-to-imessage.196827/) can. I've had a successful experience with it twice. Follow the given instructions to the letter and you'll be OK.
 
 However, when you use Clover Configurator, don't load your current config into it, choose `MacBookAir7,2`, and save the generated config.plist elsewhere. You can then manually put the SMBIOS section from the generated config.plist into your current config.plist on the EFI partition using a text editor.
+
+#### Getting the CPU to idle at 800 MHz instead of 1.3 GHz
+
+(Note: this is just simply installing CPUFriend, but without the SSDT for one certain type of processor only. stevezhengshiqi's script is also far more futureproof than my method of copying the plist from the running system and then running `patch` on it...
+If SSDT-CPUF.aml from a previous version of this writeup is suitable enough for you, you may continue to use it. Otherwise, if you wish to switch to using this method for consistency's sake, then delete SSDT-CPUF.aml and make sure `SSDT/Generate/PluginType` is set to `true` inside config.plist)
+
+My CPU is capable of idling at a lower speed than the macOS default. CPUFriend can override the platform power profile to allow for the use of a lower idle speed.
+Read the instructions at https://github.com/stevezhengshiqi/one-key-cpufriend for information on how to run the script.
+
+Once the script has done its job, make sure the EFI partition is mounted (`mount_efi`) and run `mv ~/Desktop/CPUFriend*.kext /Volumes/EFI/EFI/CLOVER/kexts/Other` (or just drag the kexts onto the EFI partition with Finder).
 
 #### Getting the iGPU to idle one step lower
 
