@@ -4,9 +4,13 @@
 
 Follow whatever is written here at your own risk. I do not take responsibility for any damage to your device or files caused by following anything on this page.
 
-**This repository makes use of submodules** So, to clone this repo, run `git clone --recursive https://github.com/qwerty12/X250-Hackintosh.git`. Otherwise, you'll be missing a ton of files.
+**This repository makes use of submodules**. So, to clone this repo, run 
+```
+git clone --recursive https://github.com/qwerty12/X250-Hackintosh.git
+```
+Otherwise, you'll be missing a ton of files.
 
-I do not keep a complete EFI folder here. While it does undeniably make things easier, I don't want to be distributing old versions of software, and nor do I want the responsibility of keeping this repository up to date with every kext etc. update.
+I do not keep a complete EFI folder here. While it does undeniably make things easier, I don't want to be distributing old versions of software, and nor do I want the responsibility of keeping this repository up to date with every kext etc. update.    
 The TL;DR version of this is something along the lines of use the SSDTs from [here](https://github.com/qwerty12/X250-Hackintosh/tree/master/DSDT_src/patched), grab the config.plist from [here](https://raw.githubusercontent.com/qwerty12/OS-X-Clover-Laptop-Config/master/config_HD5300_5500_6000.plist), [install Clover with the drivers I mention and install the kexts I mention](https://github.com/qwerty12/X250-Hackintosh#clover-configuration).
 
 ### Specs of my X250
@@ -79,12 +83,12 @@ Ethernet Adapter | Enabled | Even if you don't use the Ethernet card, MacBookPro
 
 I'll mention this now in the hopes it will be remembered when the time comes: If you do manage to boot into macOS, **DO NOT SIGN INTO ICLOUD**. The config.plist provided here does not have a Mac serial number etc. Should you try to use iMessage etc. without a proper SMBIOS definition, your account may be barred from signing in on a non-iOS device and you'll need to ring up Apple support.
 
-I won't rehash how to create a USB stick with Clover and the Mojave installer on it - RehabMan's comprehensive [guide](https://www.tonymacx86.com/threads/guide-booting-the-os-x-installer-on-laptops-with-clover.148093/) covers everything. dosdude1's patcher can download Mojave from the App Store on a Mac already running Mojave. 
-Install the mentioned `mount_efi` script in that thread at the first available opportunity. This writeup assumes you have your EFI partition already mounted when necessary.
+I won't rehash how to create a USB stick with Clover and the Mojave installer on it; RehabMan's comprehensive [guide](https://www.tonymacx86.com/threads/guide-booting-the-os-x-installer-on-laptops-with-clover.148093/) covers everything. dosdude1's patcher can download Mojave from the App Store on a Mac already running Mojave. 
+Make sure to install the mentioned `mount_efi` script mentioned in that thread at the first available opportunity. This writeup does make assumption you have your EFI partition already mounted when necessary.
 
 There are tools and guides out there for Windows allowing the creation of an Apple recovery USB, from which you can install macOS proper. I did not test this method.
 
-However, contrary to the guide, you should use a newer Clover version (not RehabMan's Clover), the config.plist from this repository, the recommended kexts and UEFI drivers. As RehabMan's guide explains, you'll need to install Clover again after managing to boot into an installed macOS copy on your disk drive using your Clover USB. The config.plist, kexts etc. needed will still be the same.
+However, contrary to the guide, you should use a newer Clover version (not RehabMan's Clover), the config.plist from this repository, and the recommended kexts and UEFI drivers mentioned in this writeup. As RehabMan's guide explains, you'll need to install Clover again after managing to boot into an installed macOS copy on your disk drive using your Clover USB. The config.plist, kexts etc. needed will still be the same.
 
 #### Clover configuration
 
@@ -96,17 +100,17 @@ Install Clover from [here](https://github.com/Dids/clover-builder/releases). I a
     * Black Green Moody (just in case: it's used by stock RehabMan configs)
     * Clovy (a vast improvement on the default embedded theme)
 * UEFI Drivers
-    * De-select AudioDxe-64 (unless you really want to hear the Mac chime)
-    * De-select DataHubDxe-64 (it's not needed on the X250)
-    * Select FSInject-64
-    * De-select SMCHelper-64 (we're using VirtualSMC which comes with its own UEFI driver)
-    * Select ApfsDriverLoader-64
-    * Select AppleImageLoader-64
-    * Select AptioMemoryFix-64 - do not select any other Aptio fixes! Despite the name, Lenovo's Phoenix UEFI requires it too
-    * Select HFSPlus
+    * De-select ⬛️ AudioDxe-64 (unless you really want to hear the Mac chime)
+    * De-select ⬛️ DataHubDxe-64 (it's not needed on the X250)
+    * Select ☑️ FSInject-64
+    * De-select ⬛️ SMCHelper-64 (we're using VirtualSMC which comes with its own UEFI driver)
+    * Select ☑️ ApfsDriverLoader-64
+    * Select ☑️ AppleImageLoader-64
+    * Select ☑️ AptioMemoryFix-64 - do not select any other Aptio fixes! Despite the name, Lenovo's Phoenix UEFI requires it too
+    * Select ☑️ HFSPlus
 
 You should also install VirtualSmc.efi into drivers64UEFI. This driver comes with the VirtualSMC zip file, which is linked in the kexts list below.
-Making sure the EFI partition is mounted (search `mount_efi` on this page), copy X250-Hackintosh/DSDT_src/srcs/RehabMan/OS-X-Clover-Laptop-Config/config_HD5300_5500_6000.plist into /Volumes/EFI/EFI/CLOVER/ and rename it to config.plist
+Making sure the EFI partition is mounted (search for `mount_efi` on this page), copy X250-Hackintosh/DSDT_src/srcs/RehabMan/OS-X-Clover-Laptop-Config/config_HD5300_5500_6000.plist into /Volumes/EFI/EFI/CLOVER/ and rename it to config.plist
 
 Regarding the APFS and HFS drivers: you'll almost certainly need HFSPlus for booting the macOS installer. The Mojave installer forces the use of APFS on a SSD, so you'll need ApfsDriverLoader to boot the resulting installation. You can get rid of one driver if you're using HFS or APFS everywhere, but keeping both around is the safest option.
 I haven't had any bad experiences with APFS personally in the short time I have been using a Hackintosh. APFS, unlike HFS+, supports sparse files. Something to bear in mind if you use NZBGet.
@@ -145,21 +149,11 @@ Place the following kexts into /Volumes/EFI/EFI/CLOVER/kexts/Other (in brackets 
     * SMCBatteryManager.kext too for working battery status
     * SMCProcessor.kext for CPU temperature etc.
 
-Ethernet:
-
-Even if you don't plan on using the Ethernet card, it helps with iCloud etc. if the Ethernet card corresponds to the `en0` device on the system instead of the Wi-Fi card. 
-
-Here I would usually recommend to install [IntelMausiEthernet](https://www.insanelymac.com/forum/files/file/396-intelmausiethernet/) (2.4.1d1). However, Wheatley informed me that it's been causing his laptop to kernel panic while sleeping (and probably mine too).
-2.5.0d0 of Mieze's driver [*may* have a fix](https://github.com/Mieze/IntelMausiEthernet/commit/f3c69cec20efd24fa467cf16f44ccaae61336766) for this. I've not been able to test it yet. 
-[2.5.0d0](https://www.insanelymac.com/forum/topic/304235-intelmausiethernetkext-for-intel-onboard-lan/?page=35&tab=comments#comment-2651490) - if it works - would probably be the better driver to use. 
-
-Else, Wheatley informs me, replacing it with AppleIntelE1000e.kext stopped the KPs for him; however, the Ethernet connection fails after a longer sleep. Rebuilding SSDT-IALL without SSDT-LANCPRW.dsl (and removing the corresponding "change IGBE._PRW to XPRW" patch inside config.plist) might fix that driver. Although, maybe not. I will try Mieze's 2.5.0, see if I still get any crashes while sleeping and update this writeup accordingly.
-
 Copy DSDT_src/patched/SSDT-IALL.aml into /Volumes/EFI/EFI/CLOVER/ACPI/patched.
 
-If you want to create your own version of SSDT-IALL from the dsl files, you can run `DSDT_src\produceSSDTs.sh`. You will need the XCode Command Line Tools (for `patch` and `make` at least) and [RehabMan's iasl fork](https://bitbucket.org/RehabMan/acpica/) installed.
+If you want to create your own version of SSDT-IALL from the dsl files, you can run `DSDT_src/produceSSDTs.sh`. You will need the XCode Command Line Tools (for `patch` and `make` at least) and [RehabMan's iasl fork](https://bitbucket.org/RehabMan/acpica/) installed.
 
-SSDT-IALL.aml comes from the SSDTs listed in DSDT_src/srcs/RehabMan/OS-X-Clover-Laptop-Config/hotpatch/SSDT-IALL.dsl. You can add your own SSDTs there and/or edit the SSDTs mentioned with your own changes and then run `DSDT_src\produceSSDTs.sh` to place a new SSDT-IALL.aml into the `patched` folder which you can then copy into Clover.    
+SSDT-IALL.aml comes from the SSDTs listed in DSDT_src/srcs/RehabMan/OS-X-Clover-Laptop-Config/hotpatch/SSDT-IALL.dsl. You can add your own SSDTs there and/or edit the SSDTs mentioned with your own changes and then run `DSDT_src/produceSSDTs.sh` to place a new SSDT-IALL.aml into the `patched` folder which you can then copy into Clover.    
 
 `DSDT_src/srcs/RehabMan/OS-X-Voodoo-PS2-Controller/SSDT-Thinkpad_Clickpad.dsl` has a (disabled) hack to set battery charging thresholds on both batteries. It's not the best place to put it, but I needed something that I know would execute at least once on startup without being trigged by a kext I wrote. It's there should you wish to enable it by uncommenting `QTHR`, and changing the thresholds set inside said function.
 
@@ -168,13 +162,22 @@ When you have time, I recommend looking at the patches applied in the config.pli
 
 [Kext Updater](https://bitbucket.org/profdrluigi/kextupdater) is a handy tool for keeping many of the kexts mentioned above up to date. You may find [Hackintool](https://www.insanelymac.com/forum/topic/335018-hackintool-v251/) useful too.
 
+#### Ethernet
+
+Even if you don't plan on using the Ethernet card, it helps with iCloud etc. if the Ethernet card corresponds to the `en0` device on the system instead of the Wi-Fi card.    
+Here I would usually recommend to install [IntelMausiEthernet](https://www.insanelymac.com/forum/files/file/396-intelmausiethernet/) (2.4.1d1). However, Wheatley informed me that it's been causing his laptop to kernel panic while sleeping (and probably mine too).
+2.5.0d0 of Mieze's driver [*may* have a fix](https://github.com/Mieze/IntelMausiEthernet/commit/f3c69cec20efd24fa467cf16f44ccaae61336766) for this. I've not been able to test it yet. 
+[2.5.0d0](https://www.insanelymac.com/forum/topic/304235-intelmausiethernetkext-for-intel-onboard-lan/?page=35&tab=comments#comment-2651490) - if it works - would probably be the better driver to use. 
+
+Else, Wheatley informs me, replacing it with AppleIntelE1000e.kext stopped the KPs for him; however, the Ethernet connection fails after a longer sleep. Rebuilding SSDT-IALL without SSDT-LANCPRW.dsl, and removing/disabling the corresponding "change IGBE._PRW to XPRW" patch inside config.plist, *might* help. I will try Mieze's 2.5.0, see if I still get any crashes while sleeping and update this writeup accordingly.
+
 ### Post-install stuff
 
 #### Getting working audio
 
 * While AppleALC is probably generally considered the way forward when it comes to audio (layout 28 works with the ALC3232), I have had better experiences with Sniki's patched AppleHDA kext (and CodecCommander & ALCPlugFix). So that is what this writeup will aid you in installing.
 
-* I keep the card reader, webcam and microphone disabled in the UEFI. Wheatley has kindly confirmed that the microphone and webcam work. My X250 does not have a touchscreen; you may need to add whatever port it shows up into OS-X-USB-Inject-All/SSDT-UIAC-ALL.dsl. To get USBInjectAll to attempt its magic with all the USB ports found, you will need to remove its section from the DSDT temporarily.
+* I keep the card reader, webcam and microphone disabled in the UEFI. Wheatley has kindly confirmed that the microphone and webcam work. My X250 does not have a touchscreen; you may need to add whatever port it shows up into OS-X-USB-Inject-All/SSDT-UIAC-ALL.dsl. To get USBInjectAll to attempt its magic with all the USB ports found, you will need to remove its section from the DSDT temporarily / rebuild SSDT-IALL without SSDT-UIAC-ALL.dsl
 
 Place [CodecCommander](https://bitbucket.org/RehabMan/os-x-eapd-codec-commander/downloads/) (2.7.1) into /Library/Extensions.
 
@@ -254,22 +257,22 @@ Before I go on, I will point out the following:
 
 FakePCIID kexts etc. are not needed.
 
-For Wi-Fi, the one kext I do recommend you install (*to the same place where Lilu.kext resides*) is [AirportBrcmFixup](https://github.com/acidanthera/AirportBrcmFixup/releases) (1.1.9). `brcmfx-country=#a` has already been set in the config.plist boot arguments. Before installing this kext and setting this specific country code, my download speeds was a fraction of what it should have been (and what I was getting from Windows).
+The one kext I do recommend you install for Wi-Fi (*to the same place where Lilu.kext resides*) is [AirportBrcmFixup](https://github.com/acidanthera/AirportBrcmFixup/releases) (1.1.9). `brcmfx-country=#a` has already been set in the config.plist boot arguments. Before installing this kext and setting this specific country code, my download speeds was a fraction of what it should have been (and what I was getting from Windows).
 
 ##### Bluetooth, Bluetooth, Bluetooth...
 
-Sometimes, turning it off means you can't turn it back on again. I have no idea why.
+Note: sometimes, turning it off means you can't turn it back on again. I have no idea why.
 
-Anyway, for Bluetooth to work, you need [this](https://github.com/RehabMan/OS-X-BrcmPatchRAM). Read the instructions there carefully. Here's my summary: to load the kext at boot, you need to do one of the following:
+Anyway, for Bluetooth to work, you need [this](https://github.com/RehabMan/OS-X-BrcmPatchRAM) kext. Read the instructions there carefully. Here's my summary: to load the kext at boot, you need to do one of the following:
 
 * Install BrcmPatchRAM2.kext and BrcmFirmware**Data**.kext to EFI/Clover/kexts/Other.
 
 * The preferred option is to install BrcmPatchRAM2.kext and BrcmFirmware**Repo**.kext to /Library/Extensions
 
 However, I personally do not have the kext load at boot. If you look at the config.plist here, you'll see that in the boot arguments the BRCM kext delays are already set pretty high - values taken from the README of the original project. In my experience, it still wasn't enough to avoid the *3* minute delays (!) I'd sometimes get on boot if the kext wasn't able to upload the firmware to the DW1830's BT chip. And I do not wish to set it any higher. I don't actually use Bluetooth myself, so the delay was unacceptable to me, but I'd still like to have the choice of being able to use Bluetooth.    
-So I have the kext load when I log in, instead. This is not a great idea if you rely on external Bluetooth peripherals being available at the login screen, but you'll always have a keyboard and mouse available on an X250...
+So I have the kext load when I log in, instead. This is not a great idea if you rely on external Bluetooth peripherals like a mouse or keyboard being available at the login screen, but at least on the X250 you'll never be without ones built in to the system...
 
-I put BrcmFirmwareRepo.kext into /Library/Extensions (you must `chmod` and `chown` this properly as was demonstrated in the AppleHDA section) and BrcmPatchRAM2.kext into /kexts. Again, permissions must be set correctly (755, root:wheel) on the /kexts folder and BrcmPatchRAM2.kext. 
+I put BrcmFirmwareRepo.kext into /Library/Extensions (you must `chmod` and `chown` this properly as was demonstrated in the AppleHDA section) and BrcmPatchRAM2.kext into /kexts, a folder I just created. Again, permissions must be set correctly (755, root:wheel) on the /kexts folder and BrcmPatchRAM2.kext. 
 
 Run `EDITOR=nano sudo visudo` and add the following rule at the end:
 
@@ -290,12 +293,16 @@ After you've set up the kexts, open the Bluetooth Preference Pane and tick the o
 I can't explain this better than P1LGRIM's [
 An iDiot's Guide To iMessage](https://www.tonymacx86.com/threads/an-idiots-guide-to-imessage.196827/) can. I've had a successful experience with it twice. Follow the given instructions to the letter and you'll be OK.
 
-However, when you use Clover Configurator, don't load your current config into it, choose `MacBookAir7,2`, and save the generated config.plist elsewhere. You can then manually put the SMBIOS section from the generated config.plist into your current config.plist on the EFI partition using a text editor.
+However, when you use Clover Configurator:
+* don't load your current config into it
+* choose `MacBookAir7,2` as the model
+
+Save the generated config.plist anywhere but on the EFI partition. You can then manually copy and paste the SMBIOS section from the generated config.plist into your current config.plist on the EFI partition using a text editor.
 
 #### Getting the CPU to idle at 800 MHz instead of 1.3 GHz
 
-(Note: this is just simply installing CPUFriend, but without the SSDT for one certain type of processor only. stevezhengshiqi's script is also far more futureproof than my method of copying the plist from the running system and then running `patch` on it...
-If SSDT-CPUF.aml from a previous version of this writeup is suitable enough for you, you may continue to use it. Otherwise, if you wish to switch to using this method for consistency's sake, then delete SSDT-CPUF.aml and make sure `SSDT/Generate/PluginType` is set to `true` inside config.plist)
+(Note: this is just simply installing CPUFriend, but without the SSDT for one certain model of SMBIOS only. stevezhengshiqi's script is also far more futureproof than my method of copying the plist from the running system and then running `patch` on it...
+If SSDT-CPUF.aml from a previous version of this writeup works for you, then there is no harm in continuing to use it. Otherwise, if you wish to switch to using this method for consistency's sake, then delete SSDT-CPUF.aml from `EFI/.../patched` and make sure `SSDT/Generate/PluginType` is set to `true` inside config.plist)
 
 My CPU is capable of idling at a lower speed than the macOS default. CPUFriend can override the platform power profile to allow for the use of a lower idle speed.
 Read the instructions at https://github.com/stevezhengshiqi/one-key-cpufriend for information on how to run the script.
@@ -317,12 +324,12 @@ Entirely, entirely, optional but the option is there.
 
 [VoltageShift](https://github.com/sicreative/VoltageShift) works fine on my X250.
 
-I won't mention the settings I use, because all processors are different - you might be able to undervolt more than I can or you may have to undervolt less if you're running into system freezes or spontaneous resets. (I realised I was undervolting the CPU too much when attempting to update Xcode from the App Store and watching something with IINA would cause a reset every time. Worked fine otherwise, just apparently not under heavy load.)
+I won't mention the settings I use, because all processors are different: you might be able to undervolt more than I can or you may have to undervolt less if you're running into system freezes or spontaneous resets. (I realised I was undervolting the CPU too much when attempting to update Xcode from the App Store and watching something with IINA at the same time would cause the laptop to reset every single time. Worked fine otherwise, just apparently not under heavy load.)
 
 
 #### Using "Retina" resolutions with the 1080p screen
 
-If you have a 1080p panel in your X250 (attempting this with a 1366x768 screen is a waste of time), you might find that the screen is too physically small to really be able to see things clearly at 1920x1080 all the time. What I do is this: run in 1680x944 in Retina mode - 3360x1888 downscaled - but switch to 1920x1080 when watching something with IINA.
+If you have a 1080p panel in your X250 (attempting this with a 1366x768 screen is a waste of time), you might find that the screen is too physically small to really be able to see things clearly at 1920x1080 all the time. What I do is this: run in 1680x944 in Retina/HiDPI mode - 3360x1888 downscaled - but switch to 1920x1080 when watching something with IINA.
 
 To enable Retina mode, I recommend using [one-key-hidpi](https://github.com/xzhih/one-key-hidpi/). It's very easy to use, and will enable the Retina-style Display Preference Panel (even if the resolutions don't exactly match up with the description).
 
@@ -400,11 +407,11 @@ sudo pmset -a autopoweroff 0
 
 #### Setting the default OS to boot into on startup
 
-You can of course edit config.plist to your heart's content, but the config.plist and Clover honours the choice made from the Startup Disk Preference Pane. There is the `LastBootedVolume` option available too.
+You can of course edit config.plist to your heart's content, but the config.plist here, and Clover of course, honours the choice made from the Startup Disk Preference Pane. There is the `LastBootedVolume` option available too.
 
 #### Better mouse and keyboard settings
 
-The keyboard layout in use should preferably be the PC variant of whatever keyboard layout you have.
+The keyboard layout in use should preferably be the PC variant of whatever keyboard layout you currently have set.
 
 From the Trackpad Preference Pane, set secondary click to "click in bottom right corner" if you want to have the trackpad's buttons actually perform a right-click in addition to having a left-click option.
 I don't think the gestures there work; you're meant to go to the keyboard settings, edit a shortcut for something and perform your desired swipe action.
@@ -413,7 +420,7 @@ The laptop's PrtSc key is bound to F13 - you can edit the various screenshot sho
 
 #### Caps lock indicator
 
-The freeware [Captin](http://captin.strikingly.com) program can be used to show the caps lock status when the button is pressed. A hex editor can be used to zero out the OFF and ON labels, making it more closer to how the Lenovo OSD looks.
+The freeware [Captin](http://captin.strikingly.com) program can be used to show the caps lock status when the button is pressed. A hex editor can be used to zero out the OFF and ON labels, making it more closer to how the Lenovo Windows OSD looks.
 
 #### ThinkPadMuteLEDSetter
 
