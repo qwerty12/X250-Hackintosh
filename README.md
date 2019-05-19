@@ -265,30 +265,21 @@ The one kext I do recommend you install for Wi-Fi (*to the same place where Lilu
 
 Note: sometimes, turning it off means you can't turn it back on again. I have no idea why.
 
-Anyway, for Bluetooth to work, you need [this](https://github.com/RehabMan/OS-X-BrcmPatchRAM) kext. Read the instructions there carefully. Here's my summary: to load the kext at boot, you need to do one of the following:
+Anyway, for Bluetooth to somewhat work using a DW1830, you need [this](https://github.com/RehabMan/OS-X-BrcmPatchRAM) kext. Read the instructions there carefully. Here's my summary: to load the kext at boot, you need to do one of the following:
 
 * Install BrcmPatchRAM2.kext and BrcmFirmware**Data**.kext to EFI/Clover/kexts/Other.
 
-* The preferred option is to install BrcmPatchRAM2.kext and BrcmFirmware**Repo**.kext to /Library/Extensions
+* The preferred option is to install BrcmPatchRAM2.kext and BrcmFirmware**Repo**.kext to /Library/Extensions - and that is what I shortly describe here
 
-However, I personally do not have the kext load at boot. If you look at the config.plist here, you'll see that in the boot arguments the BRCM kext delays are already set pretty high - values taken from the README of the original project. In my experience, it still wasn't enough to avoid the *3* minute delays (!) I'd sometimes get on boot if the kext wasn't able to upload the firmware to the DW1830's BT chip. And I do not wish to set it any higher. I don't actually use Bluetooth myself, so the delay was unacceptable to me, but I'd still like to have the choice of being able to use Bluetooth.    
-So I have the kext load when I log in, instead. This is not a great idea if you rely on external Bluetooth peripherals like a mouse or keyboard being available at the login screen, but at least on the X250 you'll never be without ones built in to the system...
+Take BrcmPatchRAM2.kext from this repository. This is a version of OS-X-BrcmPatchRAM built from master with [GridH's](https://www.tonymacx86.com/threads/fix-bcm94352z-dw1560-bt-lost-after-sleep.276501/) [HCI_RESET fix](https://github.com/RehabMan/OS-X-BrcmPatchRAM/pull/68) and [ESProcessing's upgrade delay introduction](https://github.com/RehabMan/OS-X-BrcmPatchRAM/pull/63) patches applied. These patches are essential for a reliable Bluetooth experience after resuming.    
+When (if) the patches are applied upstream, I will delete the copy here. OS-X-BrcmPatchRAM.tar.xz contains the modified source, but without the .git and firmware folders from RehabMan/OS-X-BrcmPatchRAM to save lots of space.
+BrcmFirmwareRepo.kext can be taken from the latest release of the [original project](https://bitbucket.org/RehabMan/os-x-brcmpatchram/downloads/).
 
-I put BrcmFirmwareRepo.kext into /Library/Extensions (you must `chmod` and `chown` this properly as was demonstrated in the AppleHDA section) and BrcmPatchRAM2.kext into /kexts, a folder I just created. Again, permissions must be set correctly (755, root:wheel) on the /kexts folder and BrcmPatchRAM2.kext. 
-
-Run `EDITOR=nano sudo visudo` and add the following rule at the end:
-
-```
-%admin ALL= NOPASSWD: /sbin/kextload /kexts/BrcmPatchRAM2.kext
-```
-
-Ideally, a LaunchAgent would then run the sudo command to load a kext, but I'm lazy and have the following in my [Hammerspoon](https://www.hammerspoon.org/) init.lua:
-
-```
-os.execute("/usr/bin/sudo /sbin/kextload /kexts/BrcmPatchRAM2.kext >/dev/null 2>&1")
-```
+Place BrcmFirmwareRepo.kext and BrcmPatchRAM2.kext into /Library/Extensions (you must `chmod` and `chown` the kexts properly as was demonstrated in the AppleHDA section). Load them now or restart.
 
 After you've set up the kexts, open the Bluetooth Preference Pane and tick the option to show the Bluetooth icon in the status bar if you want. If you have too many status bar icons, try the freeware Dozer program.
+
+If you're running into extraordinarily long boot delays with BrcmPatchRAM2, you can either try increasing the bpr_* delays inside config.plist or pull up the previous revision of this README.md file to see a workaround in which the kext is loaded after you've logged in.
 
 #### Getting iCloud and iMessage to work
 

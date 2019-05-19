@@ -18,6 +18,12 @@
 
 /* For touchscreen X250s, this might be missing the port that the touchscreen appears on */
 
+/*
+RehabMan:
+"UsbConnector for your BT controller should be 255 (internal)."
+"Internal devices should be "always present". If it is the kind of device that hotplugs itself when active (eg. when you insert a card), then it should be marked as an external device (in this case UsbConnector=0)."
+*/
+
 #ifndef NO_DEFINITIONBLOCK
 DefinitionBlock ("", "SSDT", 2, "hack", "_UIAC", 0)
 {
