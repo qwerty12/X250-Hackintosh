@@ -7,7 +7,7 @@ DefinitionBlock ("", "SSDT", 2, "hack", "ps2", 0)
     External(_SB.PCI0.LPC.KBD, DeviceObj)
     Scope(_SB.PCI0.LPC.KBD)
     {
-        Name(QTHS, 0x00)
+        /*Name(QTHS, 0x00)
         Method(QTHR, 0, Serialized)
         {
             External(\_SB.PCI0.LPC.EC.HKEY.BCCS, MethodObj)
@@ -31,7 +31,7 @@ DefinitionBlock ("", "SSDT", 2, "hack", "ps2", 0)
 
                 Local0--
             }
-        }
+        }*/
 
         // Select specific configuration in VoodooPS2Trackpad.kext
         Method(_DSM, 4)
