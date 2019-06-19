@@ -11,7 +11,7 @@ git clone --recursive https://github.com/qwerty12/X250-Hackintosh.git
 Otherwise, you'll be missing a ton of files.
 
 I do not keep a complete EFI folder here. While it does undeniably make things easier, I don't want to be distributing old versions of software, and nor do I want the responsibility of keeping this repository up to date with every kext etc. update.    
-The TL;DR version of this is something along the lines of use the SSDTs from [here](https://github.com/qwerty12/X250-Hackintosh/tree/master/DSDT_src/patched), grab the config.plist from [here](https://raw.githubusercontent.com/qwerty12/OS-X-Clover-Laptop-Config/master/config_HD5300_5500_6000.plist), [install Clover with the drivers I mention and install the kexts I mention](https://github.com/qwerty12/X250-Hackintosh#clover-configuration).
+The TL;DR version of this is something along the lines of use the SSDTs from [here](https://github.com/qwerty12/X250-Hackintosh/tree/master/DSDT_src/patched), grab the config.plist from [here](https://raw.githubusercontent.com/qwerty12/OS-X-Clover-Laptop-Config/master/config_HD5300_5500_6000.plist), [install Clover with the drivers I mention and install the kexts I mention](https://github.com/qwerty12/X250-Hackintosh#clover-configuration). You'll then be missing the few QOL tweaks in this guide, however.
 
 ### Specs of my X250
 
@@ -93,7 +93,7 @@ However, contrary to the guide, you should use a newer Clover version (not Rehab
 #### Clover configuration
 
 Install Clover from [here](https://github.com/Dids/clover-builder/releases). Why from there? While they're not official Clover builds, you get to use pre-release builds, you don't have to deal with SF and, most importantly, those installers have more options and kexts to choose.
-I am currently running 4928 but use the latest version where possible. RehabMan's guide linked above goes into more detail on installing Clover. I would recommend selecting the following options in the Clover installer:
+I am currently running 4964 but use the latest version where possible. RehabMan's guide linked above goes into more detail on installing Clover. I would recommend selecting the following options in the Clover installer:
 
 * Clover for UEFI booting only ☑️
 * Install Clover in the ESP ☑️
@@ -101,13 +101,13 @@ I am currently running 4928 but use the latest version where possible. RehabMan'
     * Black Green Moody (just in case: it's used by stock RehabMan configs) ☑️
     * Clovy (a vast improvement on the default embedded theme) ☑️
 * UEFI Drivers
-    * De-select ⬛️ AudioDxe-64 (unless you really want to hear the Mac chime)
+    * De-select ⬛️ AudioDxe-64 (unless you *really* want to hear the Mac startup chime)
     * De-select ⬛️ DataHubDxe-64 (it's not needed on the X250)
     * Select ☑️ FSInject-64
     * De-select ⬛️ SMCHelper-64 (we're using VirtualSMC which comes with its own UEFI driver)
     * Select ☑️ ApfsDriverLoader-64
     * Select ☑️ AppleImageLoader-64
-    * Select ☑️ AptioMemoryFix-64 - do not select any other Aptio fixes! Despite the name, Lenovo's Phoenix UEFI does requires it
+    * Select ☑️ AptioMemoryFix-64 - do not select any other Aptio fixes! Despite its name, Lenovo's Phoenix UEFI does require it
     * Select ☑️ HFSPlus
 
 You should also install VirtualSmc.efi into drivers64UEFI. This driver comes with the VirtualSMC zip file, which is linked in the kexts list below.
@@ -134,7 +134,7 @@ You might want to edit config.plist for the following:
 
 Place the following kexts into /Volumes/EFI/EFI/CLOVER/kexts/Other (in brackets are the versions I have installed at the time of writing this write-up, but install the latest versions):
 
-* [Lilu](https://github.com/acidanthera/Lilu/releases) (1.3.5)
+* [Lilu](https://github.com/acidanthera/Lilu/releases) (1.3.6)
 
 * You can optionally install the modified [LiluFriend](https://github.com/PMheart/LiluFriend) (dependencies added for the Lilu-dependent kexts recommended in this write-up) kext included in this repository. It's not needed when using Clover to load Lilu and Lilu plugin kexts, but should you wish to move everything to /Library/Extensions, you'll find it a huge help
 
@@ -144,9 +144,9 @@ Place the following kexts into /Volumes/EFI/EFI/CLOVER/kexts/Other (in brackets 
 
 * [VoodooPS2Controller](https://bitbucket.org/RehabMan/os-x-voodoo-ps2-controller/downloads/) (1.9.2)
 
-* [WhateverGreen](https://github.com/acidanthera/WhateverGreen/releases) (1.2.8)
+* [WhateverGreen](https://github.com/acidanthera/WhateverGreen/releases) (1.2.9)
 
-* [VirtualSMC](https://github.com/acidanthera/VirtualSMC/releases) (1.0.3)
+* [VirtualSMC](https://github.com/acidanthera/VirtualSMC/releases) (1.0.4)
     * SMCBatteryManager.kext too for working battery status
     * SMCProcessor.kext for CPU temperature etc.
 
@@ -165,13 +165,13 @@ When you have time, I recommend looking at the patches applied in the config.pli
 
 #### Ethernet
 
-Even if you don't plan on using the Ethernet card, it helps with iCloud etc. if the Ethernet card corresponds to the `en0` device on the system instead of the Wi-Fi card.    
-Here I would usually recommend installing [IntelMausiEthernet](https://www.insanelymac.com/forum/files/file/396-intelmausiethernet/) (2.4.1d1). However, Wheatley informed me that it's been causing his laptop to kernel panic while sleeping (and probably mine too).
-2.5.0d0 of Mieze's driver [*may* have a fix](https://github.com/Mieze/IntelMausiEthernet/commit/f3c69cec20efd24fa467cf16f44ccaae61336766) for this. I've not been able to test it yet. [2.5.0d0](https://www.insanelymac.com/forum/topic/304235-intelmausiethernetkext-for-intel-onboard-lan/?page=35&tab=comments#comment-2651490) - if it works - would be the best driver to use.
+Even if you don't plan on using the Ethernet card, it helps with iCloud etc. if the Ethernet card corresponds to the `en0` device on the system instead of the Wi-Fi card. 
 
-There is also another fork of Mieze's driver with her potential fix incorporated: [IntelMausi](https://github.com/acidanthera/IntelMausi/). I am currently using this. If I do not experience any crashes with this, I will update the guide to recommend this/2.5.0d0.
+Unless [this](https://www.insanelymac.com/forum/files/file/396-intelmausiethernet/) is newer, install [IntelMausiEthernet 2.5.0d0](https://www.insanelymac.com/forum/topic/304235-intelmausiethernetkext-for-intel-onboard-lan/?page=35&tab=comments#comment-2651490). 2.5.0 has an [Intel AMT-related fix](https://github.com/Mieze/IntelMausiEthernet/commit/f3c69cec20efd24fa467cf16f44ccaae61336766) (isn't having a vPro laptop great?) which, for me at least, stops any Ethernet-related KPs during sleep. Thanks to Wheatley who noticed that IntelMausiEthernet 2.4.0 was causing his X250 to kernel panic while sleeping and let me know.  
 
-Else, Wheatley informs me, using AppleIntelE1000e.kext instead (older driver, no relation to IntelMausiEthernet) stopped the KPs for him; however, the Ethernet connection fails after a longer sleep. Rebuilding SSDT-IALL without SSDT-LANCPRW.dsl, and removing/disabling the corresponding "change IGBE._PRW to XPRW" patch inside config.plist, *might* help with this.
+There is also another fork of Mieze's driver with her potential fix incorporated: [IntelMausi](https://github.com/acidanthera/IntelMausi/). I am currently using this and have not experienced any KPs during sleep.
+
+Wheatley informs me that using AppleIntelE1000e.kext instead [of IntelMausiEthernet 2.4.0] stopped the KPs for him; however, the Ethernet connection fails after a longer sleep. Rebuilding SSDT-IALL without SSDT-LANCPRW.dsl, and removing/disabling the corresponding "change IGBE._PRW to XPRW" patch inside config.plist, *might* help with this. It is an older driver, however, and by all accounts Mieze's driver supports more features: I would try using IntelMausiEthernet 2.5.0 first.
 
 ### Post-install stuff
 
@@ -207,44 +207,14 @@ For some reason, and I'm hoping that it's something I messed up on this install,
 
 I don't have a fix, just a mere workaround to prevent power saving when headphones are plugged in:
 
-Install [Mac Audio Keepalive](https://github.com/milgra/macaudiokeepalive) to Applications. Install [Hammerspoon](https://www.hammerspoon.org/). Put this into the init.lua:
+Install [Mac Audio Keepalive](https://github.com/milgra/macaudiokeepalive) to Applications. Install [Hammerspoon](https://www.hammerspoon.org/). Use the [init.lua](https://github.com/qwerty12/X250-Hackintosh/blob/master/res/init.lua) from this repository.
 
-```
-function startStopOapka(start)
-	if start then
-		hs.application.open("com.milgra.oapka")
-	else
-		local oapka = hs.application.get("com.milgra.oapka")
-		if oapka then
-			oapka:kill()
-		end
-	end
-end
+A lighter alternative to Mac Audio Keepalive is [antipopd](https://github.com/mttrb/antipopd). 
+* Install `setsid` for macOS: `brew install tzvetkoff/homebrew-extras/setsid` (or replace the `setsid` line in init.lua with `os.execute("nohup /usr/local/bin/antipopd >/dev/null 2>&1 &")` [untested])
+* Take (or compile yourself) the `antipopd` binary from its repository and place it into /usr/local/bin. Make sure it's `chmod`ded 755.
+* Inside init.lua, remove the `startStopApp(start, "com.milgra.oapka")` line and uncomment the antipopd section just directly below where said line used to be.
 
-function audioWatch(uid, event, scope, element)
-	if (scope == "outp" or scope == "glob") and element == 0 then
-		if event == "jack" then
-			startStopOapka(dev:jackConnected())
-		end
-	end
-end
-
-dev = hs.audiodevice.findOutputByName("Built-in Output")
-if not dev then
-	dev = hs.audiodevice.defaultOutputDevice()
-end
-if dev then
-	hs.application.enableSpotlightForNameSearches(false)
-	if dev:jackConnected() then
-		startStopOapka(true)
-	end
-
-	dev:watcherCallback(audioWatch)
-	dev:watcherStart()
-end
-```
-
-With Hammerspoon running, plugging the headphones will start Mac Audio Keepalive and then stop it when unplugging them. As already alluded to, for some reason this problem doesn't occur when the speakers are active.
+With Hammerspoon running, plugging in headphones will start Mac Audio Keepalive/antipopd and then stop it when unplugging them. As already alluded to, for some reason this problem doesn't occur when the speakers are active.
 
 #### Getting the DW1830 working for Wi-Fi and Bluetooth
 
@@ -259,7 +229,7 @@ Before I go on, I will point out the following:
 
 FakePCIID kexts etc. are not needed.
 
-The one kext I do recommend you install for Wi-Fi (*to the same place where Lilu.kext resides*) is [AirportBrcmFixup](https://github.com/acidanthera/AirportBrcmFixup/releases) (1.1.9). `brcmfx-country=#a` has already been set in the config.plist boot arguments. Before installing this kext and setting this specific country code, my download speeds was a fraction of what it should have been (and what I was getting from Windows).
+The one kext I do recommend you install for Wi-Fi (*to the same place where Lilu.kext resides*) is [AirportBrcmFixup](https://github.com/acidanthera/AirportBrcmFixup/releases) (2.0.0). `brcmfx-country=#a` has already been set in the config.plist boot arguments. Before installing this kext and setting this specific country code, my download speeds was a fraction of what it should have been (and what I was getting from Windows).
 
 ##### Bluetooth, Bluetooth, Bluetooth...
 
@@ -286,34 +256,9 @@ Run `EDITOR=nano sudo visudo` and add the following rule at the end:
 %admin ALL= NOPASSWD: /sbin/kextload /kexts/BrcmPatchRAM2.kext
 ```
 
-Save the following as ~/Library/LaunchAgents/com.q12.brcmpatchloader.plist:
+Copy [com.q12.brcmpatchloader.plist](https://github.com/qwerty12/X250-Hackintosh/blob/master/res/com.q12.brcmpatchloader.plist) into ~/Library/LaunchAgents/
 
-```
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
-	<key>Label</key>
-	<string>com.q12.brcmpatchloader</string>
-	<key>LaunchOnlyOnce</key>
-	<true/>
-	<key>LimitLoadToSessionType</key>
-	<array>
-		<string>Aqua</string>
-	</array>
-	<key>ProcessType</key>
-	<string>Background</string>
-	<key>ProgramArguments</key>
-	<array>
-		<string>/usr/bin/sudo</string>
-		<string>/sbin/kextload</string>
-		<string>/kexts/BrcmPatchRAM2.kext</string>
-	</array>
-	<key>RunAtLoad</key>
-	<true/>
-</dict>
-</plist>
-```
+Run `launchctl load -w ~/Library/LaunchAgents/com.q12.brcmpatchloader.plist` to ensure it's set to load on login.
 
 Restart or load the kexts yourself now. After doing so, open the Bluetooth Preference Pane and tick the option to show the Bluetooth icon in the status bar if you want. If you have too many status bar icons, try the freeware Dozer program.
 
@@ -339,12 +284,7 @@ Once the script has done its job, make sure the EFI partition is mounted (`mount
 
 #### Getting the iGPU to idle one step lower
 
-Install the included AppleGraphicsPowerManagement_Broadwell.kext into /Library/Extensions. Make sure to `chmod`, `chown` it properly and rebuild the kext cache.
-
-Running 
-`ioreg -rlw0 -p IOService -c AGPMController -k Machine | grep GT` after rebooting will tell you if the kext has been installed properly - GT2Floor and GT3Floor should be 6.
-
-This kext comes from a Mojave .4 install, with the GT{2,3}Floor properties modified and a higher version number etc. set to ensure this kext gets used instead of the original one from /S/L/E. Read nguyenlc1993's Asus guide on GitHub if you wish to make your own kext to do this.
+AppleGraphicsPowerManagement_Broadwell.kext has been removed from this repository. If you have it installed, I would recommend removing it. In my case, it was responsible for sporadic resets when resuming from sleep, and for hard system lockups when opening more than a few tabs in Chrome.
 
 #### Undervolting the CPU and GPU
 
@@ -353,7 +293,6 @@ Entirely, entirely, optional but the option is there.
 [VoltageShift](https://github.com/sicreative/VoltageShift) works fine on my X250.
 
 I won't mention the settings I use, because all processors are different: you might be able to undervolt more than I can or you may have to undervolt less if you're running into system freezes or spontaneous resets. (I realised I was undervolting the CPU too much when attempting to update Xcode from the App Store and watching something with IINA at the same time would cause the laptop to reset every single time. Worked fine otherwise, just apparently not under heavy load.)
-
 
 #### Using "Retina" resolutions with the 1080p screen
 
@@ -396,20 +335,10 @@ This isn't the best solution out there - this will not work at the login screen 
 
 With the SSDT here, pressing the Wi-Fi key will send F17 to the system.
 
-You can use Hammerspoon to detect and perform specified actions on said keypresses by putting the following into the init.lua:
-
-```
-hs.hotkey.bind({"Ctrl"}, "F17", function()
-	hs.wifi.setPower(not hs.wifi.interfaceDetails()["power"])
-end)
-	
-hs.hotkey.bind({}, "F17", function()
-	os.execute("/usr/local/bin/blueutil -p toggle")
-end)
-```
+You can use Hammerspoon to detect and perform specified actions on said keypresses, look at the two `hs.hotkey.bind` lines in this repository's [init.lua](https://github.com/qwerty12/X250-Hackintosh/blob/master/res/init.lua) file.
 
 `blueutil` comes from [Homebrew](https://brew.sh) so install it if you want Bluetooth toggling to work.
-With this config, you can press Fn+F8 to toggle Bluetooth and if you press Ctrl+Fn+F8, Wi-Fi will be toggled.
+With this HS config, you can press Fn+F8 to toggle Bluetooth and if you press Ctrl+Fn+F8, Wi-Fi will be toggled.
 This assumes you're using a Wi-Fi and Bluetooth solution natively supported by macOS.
 
 #### Disable hibernation
