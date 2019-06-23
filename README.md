@@ -43,6 +43,7 @@ Card reader | Realtek something | sinetek's driver (recommended: [syscl's fork](
     * WhateverGreen to patch the FB kexts to work with 32 MB DVMT-prealloc. The Lenovo UEFI only allocates 32 MB, and the EFI variable that controls it is locked. As explained by RehabMan, the Apple framebuffer kexts expect at least 64 MB and will KP when it can't get this. The UEFI 256/512 MB GPU memory setting has no relation to this ☹️
 * Fn+F10, Fn+F11 and Fn+F12 are all configured to send previous track, play/pause and next track respectively. I mean, you can't have surely been expecting anything different from the person who wrote [this](https://github.com/qwerty12/X250-F10-F12-MediaKeys). You can edit Goldfish64/Hackintosh/Lenovo-ThinkPad-T450/SSDTs/SSDT-FNKEY.dsl for key bindings more appropriate for the labels should you wish.
 * I use the `MacBookAir7,2` SMBIOS profile. While `MacBookPro12,1` also works, it has terrible things like "TCP Keep Alive when sleeping" enabled - which, without IGBE's _PRW being hooked (the DSDT here does that), causes instant wakeup from sleep
+* You may get a faster sleep time if you add `darkwake=0` as a bootarg to Clover's config.plist
 
 ### Thanks to
 
@@ -138,7 +139,7 @@ Place the following kexts into /Volumes/EFI/EFI/CLOVER/kexts/Other (in brackets 
 
 * You can optionally install the modified [LiluFriend](https://github.com/PMheart/LiluFriend) (dependencies added for the Lilu-dependent kexts recommended in this write-up) kext included in this repository. It's not needed when using Clover to load Lilu and Lilu plugin kexts, but should you wish to move everything to /Library/Extensions, you'll find it a huge help
 
-* [RTCMemoryFixup](https://github.com/acidanthera/RTCMemoryFixup/releases) - needed for more reliable sleep and wake. The config.plist here has an appropriate `rtcfx_exclude` set with offsets I found that stop the laptop from saying that the CMOS checksum is wrong on the next reboot after resuming from suspend. The Clover RTC patches do not do anything for this laptop and have been disabled. (1.0.3)
+* [RTCMemoryFixup](https://github.com/acidanthera/RTCMemoryFixup/releases) - needed for more reliable sleep and wake. The config.plist here has an appropriate `rtcfx_exclude` set with offsets I found that stop the laptop from saying that the CMOS checksum is wrong on the next reboot after resuming from sleep. The Clover RTC patches do not do anything for this laptop and have been disabled. (1.0.3)
 
 * [USBInjectAll](https://bitbucket.org/RehabMan/os-x-usb-inject-all/downloads/) (0.7.1)
 
@@ -256,7 +257,7 @@ Run `EDITOR=nano sudo visudo` and add the following rule at the end:
 %admin ALL= NOPASSWD: /sbin/kextload /kexts/BrcmPatchRAM2.kext
 ```
 
-Copy [com.q12.brcmpatchloader.plist](https://github.com/qwerty12/X250-Hackintosh/blob/master/res/com.q12.brcmpatchloader.plist) into ~/Library/LaunchAgents/
+Copy res/[com.q12.brcmpatchloader.plist](https://github.com/qwerty12/X250-Hackintosh/blob/master/res/com.q12.brcmpatchloader.plist) from your clone of this repository into ~/Library/LaunchAgents/
 
 Run `launchctl load -w ~/Library/LaunchAgents/com.q12.brcmpatchloader.plist` to ensure it's set to load on login.
 
@@ -335,7 +336,7 @@ This isn't the best solution out there - this will not work at the login screen 
 
 With the SSDT here, pressing the Wi-Fi key will send F17 to the system.
 
-You can use Hammerspoon to detect and perform specified actions on said keypresses, look at the two `hs.hotkey.bind` lines in this repository's [init.lua](https://github.com/qwerty12/X250-Hackintosh/blob/master/res/init.lua) file.
+You can use Hammerspoon to detect and perform specified actions on said keypresses, look at the two `hs.hotkey.bind` lines in this repository's res/[init.lua](https://github.com/qwerty12/X250-Hackintosh/blob/master/res/init.lua) file.
 
 `blueutil` comes from [Homebrew](https://brew.sh) so install it if you want Bluetooth toggling to work.
 With this HS config, you can press Fn+F8 to toggle Bluetooth and if you press Ctrl+Fn+F8, Wi-Fi will be toggled.
