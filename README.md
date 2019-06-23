@@ -245,7 +245,7 @@ Anyway, for Bluetooth to somewhat work using a DW1830, you need [this](https://g
 However, I personally do not have the kext load at boot. Even with BRCM kext delays set very high - higher than those specified in the README of the original project - it still wasn't enough to avoid the *3* minute delays (!) I'd sometimes get on boot because the system would wait for the Bluetooth chip to be ready. And it seems like BrcmPatchRAM actually managed to upload the firmware successfully in many of these cases. I don't actually use Bluetooth myself, so the delay was unacceptable to me, but I'd still like to have the choice of being able to use Bluetooth.    
 So I have the kext load when I log in, instead. This is not a great idea if you rely on external Bluetooth peripherals like a mouse or keyboard being available at the login screen.
 
-Take BrcmPatchRAM2.kext from this repository inside the res folder. This is a version of OS-X-BrcmPatchRAM built from master with [GridH's](https://www.tonymacx86.com/threads/fix-bcm94352z-dw1560-bt-lost-after-sleep.276501/) [HCI_RESET fix](https://github.com/RehabMan/OS-X-BrcmPatchRAM/pull/68) and [ESProcessing's upgrade delay introduction](https://github.com/RehabMan/OS-X-BrcmPatchRAM/pull/63) patches applied. These patches are essential for a reliable Bluetooth experience after resuming.    
+Take BrcmPatchRAM2.kext from the res folder of this repository. This is a version of OS-X-BrcmPatchRAM built from master with [GridH's](https://www.tonymacx86.com/threads/fix-bcm94352z-dw1560-bt-lost-after-sleep.276501/) [HCI_RESET fix](https://github.com/RehabMan/OS-X-BrcmPatchRAM/pull/68) and [ESProcessing's upgrade delay introduction](https://github.com/RehabMan/OS-X-BrcmPatchRAM/pull/63) patches applied. These patches are essential for a reliable Bluetooth experience after resuming.    
 When (if) the patches are applied upstream, I will delete the copy here. OS-X-BrcmPatchRAM.tar.xz contains the modified source, but without the .git and firmware folders from RehabMan/OS-X-BrcmPatchRAM to save lots of space.
 BrcmFirmwareRepo.kext can be taken from the latest release of the [original project](https://bitbucket.org/RehabMan/os-x-brcmpatchram/downloads/).
 
@@ -387,9 +387,9 @@ If anybody wants to make a better version of [ThinkPadMuteLEDSetter](https://git
 #### Fan control
 
 Based on [123marvin123's patch for the T430](https://github.com/drasbeck/macos-thinkpad-t430/pull/5), there's a commented-out fan control method. It can be enabled by:
-* uncommenting out the `FCPU` method from DSDT_src/srcs/Goldfish64/Hackintosh/Lenovo-ThinkPad-T450/SSDTs/SSDT-BATT.dsl, rebuilding the DSDT and installing it to your Clover EFI folder
+* uncommenting out the `FCPU` method inside the `SMCD` device from DSDT_src/srcs/Goldfish64/Hackintosh/Lenovo-ThinkPad-T450/SSDTs/SSDT-BATT.dsl, rebuilding the DSDT and installing it to your Clover EFI folder
 * installing RehabMan's ACPIPoller kext: https://bitbucket.org/RehabMan/os-x-acpi-poller/downloads/
 
 The fan curves were modified from the original patch - I don't mind the fan going off more often if it means I'll get lower temperatures overall. (Though of course, the longer the fan runs, the more quickly it will need to be replaced.)
 
-I have also left a modified version of my DisableTurboBoostBattery kext in the res folder. This kext has been tested on 10.14.5 but it will always disable Turbo Boost two minutes after it's been loaded and 1 minute 10 seconds after resuming from sleep. It can be unloaded to re-enable Turbo Boost again.
+I have also left a modified version of my DisableTurboBoostBattery kext in the res folder. This kext has been tested on 10.14.5. It will always disable Turbo Boost two minutes after it's been loaded (typically on startup) and 1 minute 10 seconds after resuming from sleep. It can be unloaded to re-enable Turbo Boost again.
