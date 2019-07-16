@@ -93,26 +93,29 @@ However, contrary to the guide, you should use a newer Clover version (not Rehab
 
 #### Clover configuration
 
-Install Clover from [here](https://github.com/Dids/clover-builder/releases). Why from there? While they're not official Clover builds, you get to use pre-release builds, you don't have to deal with SF and, most importantly, those installers have more options and kexts to choose.
-I am currently running 4964 but use the latest version where possible. RehabMan's guide linked above goes into more detail on installing Clover. I would recommend selecting the following options in the Clover installer:
+Install Clover from [here](https://sourceforge.net/projects/cloverefiboot/files/Installer/).
+I am currently running 4988 but use the latest version where possible. RehabMan's guide linked above goes into more detail on installing Clover. After viewing the Important Information and clicking Continue, make sure to click Customise. I would recommend selecting the following options in the Clover installer:
 
 * Clover for UEFI booting only ☑️
 * Install Clover in the ESP ☑️
+* UEFI Drivers (assume you should de-select any listed driver not explicitly mentioned in this list)
+    * Recommended drivers
+        * De-select ⬛️ AudioDxe-64 (unless you *really* want to hear the Mac startup chime)
+        * De-select ⬛️ DataHubDxe-64 (it's seemingly not needed on the X250)
+        * Select ☑️ FSInject-64
+        * De-select ⬛️ SMCHelper-64 (we're using VirtualSMC which comes with its own UEFI driver)
+    * File System drivers
+        * Select ☑️ ApfsDriverLoader-64 (also available [here](https://github.com/acidanthera/AppleSupportPkg/releases), just in case it gets removed from the Clover installer)
 * Themes (optional - if you can spare the space on the EFI partition):
     * Black Green Moody (just in case: it's used by stock RehabMan configs) ☑️
     * Clovy (a vast improvement on the default embedded theme) ☑️
-* UEFI Drivers
-    * De-select ⬛️ AudioDxe-64 (unless you *really* want to hear the Mac startup chime)
-    * De-select ⬛️ DataHubDxe-64 (it's not needed on the X250)
-    * Select ☑️ FSInject-64
-    * De-select ⬛️ SMCHelper-64 (we're using VirtualSMC which comes with its own UEFI driver)
-    * Select ☑️ ApfsDriverLoader-64
-    * Select ☑️ AppleImageLoader-64
-    * Select ☑️ AptioMemoryFix-64 - do not select any other Aptio fixes! Despite its name, Lenovo's Phoenix UEFI does require it
-    * Select ☑️ HFSPlus
 
-You should also install VirtualSmc.efi into drivers64UEFI. This driver comes with the VirtualSMC zip file, which is linked in the kexts list below.
 Making sure the EFI partition is mounted (search for `mount_efi` on this page), copy X250-Hackintosh/DSDT_src/srcs/RehabMan/OS-X-Clover-Laptop-Config/config_HD5300_5500_6000.plist into /Volumes/EFI/EFI/CLOVER/ and rename it to config.plist
+
+The following separate UEFI drivers must also be installed into /Volumes/EFI/EFI/CLOVER/drivers/UEFI/ :
+    * VirtualSmc.efi, which comes with the VirtualSMC zip file, find it linked in the kexts list below
+    * AptioMemoryFix.efi from the RELEASE zip [here](https://github.com/acidanthera/AptioFixPkg/releases). Despite its name, Lenovo's Phoenix UEFI requires it
+    * HFSPlus.efi from the res folder of this repository
 
 Regarding the APFS and HFS drivers: you'll almost certainly need HFSPlus for booting the macOS installer. The Mojave installer forces the use of APFS on an SSD, so you'll need ApfsDriverLoader to boot the resulting installation. You can get rid of one driver if you're using HFS or APFS everywhere, but keeping both around is the safest option.
 I haven't had any bad experiences with APFS personally in the short time I have been using a Hackintosh. APFS, unlike HFS+, supports sparse files. Something to bear in mind if you use NZBGet.
@@ -236,7 +239,7 @@ The one kext I do recommend you install for Wi-Fi (*to the same place where Lilu
 
 Note: sometimes, turning it off means you can't turn it back on again. I have no idea why.
 
-Anyway, for Bluetooth to somewhat work using a DW1830, you need [this](https://github.com/RehabMan/OS-X-BrcmPatchRAM) kext. Read the instructions there carefully. Anyway, here's my summary: to load the kext at boot, you need to do one of the following:
+Anyway, for Bluetooth to somewhat work using a DW1830, you need [this](https://github.com/headkaze/OS-X-BrcmPatchRAM). Download BrcmPatchRAM_Catalina_All.zip from the releases page. Read the instructions there carefully. Anyway, here's my summary: to load the kext at boot, you need to do one of the following:
 
 * Install BrcmPatchRAM2.kext and BrcmFirmware**Data**.kext to EFI/Clover/kexts/Other.
 
@@ -249,7 +252,9 @@ Take BrcmPatchRAM2.kext from the res folder of this repository. This is a versio
 When (if) the patches are applied upstream, I will delete the copy here. OS-X-BrcmPatchRAM.tar.xz contains the modified source, but without the .git and firmware folders from RehabMan/OS-X-BrcmPatchRAM to save lots of space.
 BrcmFirmwareRepo.kext can be taken from the latest release of the [original project](https://bitbucket.org/RehabMan/os-x-brcmpatchram/downloads/).
 
-Place BrcmFirmwareRepo.kext into /Library/Extensions (you must `chmod` and `chown` this properly as was demonstrated in the AppleHDA section). Place BrcmPatchRAM2.kext into /kexts, a folder you'll need to create yourself. Again, permissions must be set correctly (755, root:wheel) on the /kexts folder and BrcmPatchRAM2.kext. 
+If it exists, BrcmBluetoothInjector.kext needs to be placed into EFI/Clover/kexts/Other.
+
+Place BrcmFirmwareRepo.kext into /Library/Extensions. Place BrcmPatchRAM2.kext into /kexts, a folder you'll need to create yourself. As demonstrated in the AppleHDA section, appropriate permissions must be set correctly (`chmod` 755, `chown` root:wheel) on the /kexts folder, BrcmFirmwareRepo.kext and BrcmPatchRAM2.kext.
 
 Run `EDITOR=nano sudo visudo` and add the following rule at the end:
 
